@@ -262,6 +262,13 @@ input[type="radio"] {
   margin: 0;
 }
 
+.out-of-stock-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--rust);
+}
+
 .shop-price {
   font-family: var(--font-body);
   font-weight: 800;
@@ -1127,6 +1134,7 @@ input[type="radio"] {
 .stamp-booth  { color: var(--rust); }
 .stamp-curing { color: #a3781f; }
 .stamp-ready  { color: #276b3f; }
+.stamp-complete { color: var(--ink); background: var(--paper-dim); }
 
 .status-select {
   background: #fff;

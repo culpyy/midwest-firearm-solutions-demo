@@ -11,14 +11,16 @@ const MFS = (() => {
     intake: 'mfs_demo_intake',
     reviews: 'mfs_demo_reviews',
     orders: 'mfs_demo_orders',
+    stock: 'mfs_demo_stock',
   };
 
-  const STAGES = ['queued', 'booth', 'curing', 'ready'];
+  const STAGES = ['queued', 'booth', 'curing', 'ready', 'complete'];
   const STAGE_LABEL = {
     queued: 'Queued',
     booth: 'In the booth',
     curing: 'Curing',
     ready: 'Ready for pickup',
+    complete: 'Picked up & paid',
   };
 
   const SEED_JOBS = [
@@ -81,6 +83,18 @@ const MFS = (() => {
     if (!job) return;
     job.stage = stage;
     saveJobs(jobs);
+  }
+
+  // ---- Products (stock is editable and persisted; name/price/spec are fixed) ----
+  function getProducts() {
+    const stockOverrides = load(KEYS.stock, {});
+    return PRODUCTS.map(p => ({ ...p, stock: stockOverrides[p.id] ?? p.stock }));
+  }
+  function setStock(id, stock) {
+    const n = Math.max(0, parseInt(stock, 10) || 0);
+    const stockOverrides = load(KEYS.stock, {});
+    stockOverrides[id] = n;
+    save(KEYS.stock, stockOverrides);
   }
 
   // ---- Cart ----
@@ -150,7 +164,8 @@ const MFS = (() => {
   }
 
   return {
-    STAGES, STAGE_LABEL, PRODUCTS, ORDER_STATUSES,
+    STAGES, STAGE_LABEL, ORDER_STATUSES,
+    getProducts, setStock,
     getJobs, saveJobs, advanceJob, setJobStage,
     getCart, saveCart, addToCart, updateCartQty, removeFromCart, clearCart, cartTotal, cartCount,
     getIntake, addIntake,

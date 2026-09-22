@@ -3,7 +3,7 @@
 // localStorage-only state, no backend.
 
 function stampClass(stage) {
-  return { queued: 'stamp-queued', booth: 'stamp-booth', curing: 'stamp-curing', ready: 'stamp-ready' }[stage];
+  return { queued: 'stamp-queued', booth: 'stamp-booth', curing: 'stamp-curing', ready: 'stamp-ready', complete: 'stamp-complete' }[stage];
 }
 
 function statusSelectHTML(job) {

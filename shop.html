@@ -74,21 +74,22 @@
 <script>
   function renderShop() {
     const el = document.getElementById('shop-list');
-    el.innerHTML = MFS.PRODUCTS.map(p => `
+    const products = MFS.getProducts();
+    el.innerHTML = products.map(p => `
       <div class="shop-row">
         <div class="shop-sku">${p.id.toUpperCase()}</div>
         <div class="shop-row-body">
           <h3>${p.name}</h3>
-          <p class="spec">${p.spec}</p>
+          <p class="spec">${p.spec}${p.stock <= 0 ? ' <span class="out-of-stock-tag">Out of stock</span>' : ''}</p>
         </div>
         <div class="shop-price">$${p.price.toFixed(2)}</div>
-        <button type="button" class="btn-add" data-add="${p.id}">Add to cart</button>
+        <button type="button" class="btn-add" data-add="${p.id}" ${p.stock <= 0 ? 'disabled' : ''}>${p.stock <= 0 ? 'Out of stock' : 'Add to cart'}</button>
       </div>
     `).join('');
 
     el.querySelectorAll('[data-add]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const product = MFS.PRODUCTS.find(p => p.id === btn.dataset.add);
+        const product = products.find(p => p.id === btn.dataset.add);
         MFS.addToCart(product, 1);
         btn.textContent = 'Added ✓';
         setTimeout(() => { btn.textContent = 'Add to cart'; }, 1200);

@@ -97,7 +97,7 @@
 
   // ---- Builds tab (shared with index.html's tracker) ----
   function stampClass(stage) {
-    return { queued: 'stamp-queued', booth: 'stamp-booth', curing: 'stamp-curing', ready: 'stamp-ready' }[stage];
+    return { queued: 'stamp-queued', booth: 'stamp-booth', curing: 'stamp-curing', ready: 'stamp-ready', complete: 'stamp-complete' }[stage];
   }
 
   function statusSelectHTML(job) {
@@ -173,16 +173,46 @@
   // ---- Products tab ----
   function renderProducts() {
     const rail = document.getElementById('products-rail');
-    rail.innerHTML = MFS.PRODUCTS.map(p => `
-      <div class="admin-row">
-        <div class="meta-code">${p.id.toUpperCase()}</div>
-        <div>
-          <div class="meta-title">${p.name}</div>
-          <div class="meta-sub">$${p.price.toFixed(2)} · ${p.stock} in stock</div>
+    rail.innerHTML = MFS.getProducts().map(p => {
+      const isDigital = p.stock >= 999;
+      const stampClass = isDigital ? 'stamp-ready' : p.stock > 5 ? 'stamp-ready' : p.stock > 0 ? 'stamp-booth' : 'stamp-queued';
+      const stampLabel = isDigital ? 'Unlimited' : p.stock > 5 ? 'In stock' : p.stock > 0 ? 'Low stock' : 'Out of stock';
+      const stockControl = isDigital
+        ? '<p class="fieldset-note" style="margin:0;">Digital file, no stock to track</p>'
+        : `<div class="qty-stepper">
+             <button type="button" data-stock-down="${p.id}">−</button>
+             <span class="qty-val" data-stock-val="${p.id}">${p.stock}</span>
+             <button type="button" data-stock-up="${p.id}">+</button>
+           </div>`;
+      return `
+        <div class="admin-row">
+          <div class="meta-code">${p.id.toUpperCase()}</div>
+          <div>
+            <div class="meta-title">${p.name}</div>
+            <div class="meta-sub">$${p.price.toFixed(2)}</div>
+          </div>
+          <div class="ticket-status">
+            <span class="stamp ${stampClass}">${stampLabel}</span>
+            ${stockControl}
+          </div>
         </div>
-        <span class="stamp ${p.stock > 5 ? 'stamp-ready' : 'stamp-booth'}">${p.stock > 5 ? 'In stock' : 'Low stock'}</span>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    rail.querySelectorAll('[data-stock-up]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const p = MFS.getProducts().find(p => p.id === btn.dataset.stockUp);
+        MFS.setStock(p.id, p.stock + 1);
+        renderProducts();
+      });
+    });
+    rail.querySelectorAll('[data-stock-down]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const p = MFS.getProducts().find(p => p.id === btn.dataset.stockDown);
+        MFS.setStock(p.id, p.stock - 1);
+        renderProducts();
+      });
+    });
   }
 
   // ---- Intake tab ----
