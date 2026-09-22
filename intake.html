@@ -40,25 +40,29 @@
   <div class="wrap">
     <p class="eyebrow">DROP OFF OR SHIP IN</p>
     <h1>Tell us what you're sending.</h1>
-    <p>Pick what you need done below and watch the price build itself off your real, current price list. Then leave your info so it's logged the second it arrives.</p>
+    <p>Want your pistol Cerakoted and stippled? Pick both below. Everything you select adds to the same estimate, built off your real, current price list.</p>
   </div>
 </header>
 
 <section class="section" style="padding-top:40px;">
   <div class="wrap">
 
-    <div class="admin-tabs" role="tablist" id="serviceTabs">
-      <button type="button" role="tab" data-service="cerakote" aria-selected="true">Cerakote</button>
-      <button type="button" role="tab" data-service="stippling" aria-selected="false">Stippling</button>
-      <button type="button" role="tab" data-service="laser" aria-selected="false">Laser Engraving</button>
-      <button type="button" role="tab" data-service="other" aria-selected="false">Something else</button>
+    <p class="fieldset-note" style="margin-bottom:14px;">What do you need done? Pick as many as apply.</p>
+    <div class="service-toggles" id="serviceToggles">
+      <button type="button" data-service="cerakote" aria-pressed="false">Cerakote</button>
+      <button type="button" data-service="stippling" aria-pressed="false">Stippling</button>
+      <button type="button" data-service="laser" aria-pressed="false">Laser Engraving</button>
+      <button type="button" data-service="other" aria-pressed="false">Something else</button>
     </div>
 
     <form id="intakeForm">
       <div class="quote-layout" style="margin-bottom:40px;">
-        <div>
+        <div id="quote-sections">
 
-          <div class="admin-panel is-active" id="panel-cerakote">
+          <p class="fieldset-note" id="no-service-note">Nothing picked yet. Select a service above to start building the order.</p>
+
+          <div class="quote-section" id="section-cerakote" hidden>
+            <h3 class="quote-section-head">Cerakote</h3>
             <p class="view-switch-note">Pricing below is for a solid color. Adding a custom pattern (multi-cam, Kryptek, etc.) adds $65 per color on top of your base color.</p>
             <div class="form-group">
               <label for="q-cerakote-firearm">Firearm type</label>
@@ -80,14 +84,16 @@
             </div>
           </div>
 
-          <div class="admin-panel" id="panel-stippling">
+          <div class="quote-section" id="section-stippling" hidden>
+            <h3 class="quote-section-head">Stippling</h3>
             <p class="view-switch-note">Glock frame packages. Add-ons apply to any package.</p>
             <div id="stippling-packages"></div>
             <p class="fieldset-note" style="margin:16px 0 10px;">Add-ons</p>
             <div id="stippling-addons"></div>
           </div>
 
-          <div class="admin-panel" id="panel-laser">
+          <div class="quote-section" id="section-laser" hidden>
+            <h3 class="quote-section-head">Laser Engraving</h3>
             <p class="view-switch-note">Check everything that applies. "Starting at" items are estimates. Real pricing depends on the artwork.</p>
             <div id="laser-types"></div>
             <div class="form-check" style="margin-top:20px;">
@@ -96,8 +102,9 @@
             </div>
           </div>
 
-          <div class="admin-panel" id="panel-other">
-            <p class="view-switch-note">For gunsmith work or anything that doesn't fit the categories above. No estimate here, just tell us what you need in the notes.</p>
+          <div class="quote-section" id="section-other" hidden>
+            <h3 class="quote-section-head">Something else</h3>
+            <p class="view-switch-note">For gunsmith work or anything that doesn't fit the categories above. Not priced here, just tell us what you need in the notes.</p>
             <div class="form-group">
               <label for="q-other-type">Firearm type</label>
               <select id="q-other-type">
@@ -113,7 +120,7 @@
 
         </div>
 
-        <div class="order-summary" id="quote-summary">
+        <div class="order-summary" id="quote-summary" style="display:none;">
           <h3>Estimate</h3>
           <div id="quote-lines"></div>
           <div class="summary-total"><span>Total</span><span id="quote-total">$0.00</span></div>
@@ -155,7 +162,7 @@
 <script src="js/store.js"></script>
 <script src="js/pricing.js"></script>
 <script>
-  let activeService = 'cerakote';
+  const activeServices = new Set();
   let cerakoteFirearm = 'handgun';
   let cerakoteParts = new Set();
   let cerakotePattern = false;
@@ -165,20 +172,26 @@
   let stipplingAddons = new Set();
   let laserSelections = new Map();
 
-  // ---- Service tabs ----
-  document.getElementById('serviceTabs').addEventListener('click', (e) => {
+  // ---- Service toggles (multi-select) ----
+  document.getElementById('serviceToggles').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-service]');
     if (!btn) return;
-    activeService = btn.dataset.service;
-    document.querySelectorAll('#serviceTabs [data-service]').forEach(t => t.setAttribute('aria-selected', String(t === btn)));
-    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('is-active'));
-    document.getElementById('panel-' + activeService).classList.add('is-active');
-    document.getElementById('quote-summary').style.display = activeService === 'other' ? 'none' : 'block';
+    const service = btn.dataset.service;
+    const nowOn = !activeServices.has(service);
+    if (nowOn) activeServices.add(service); else activeServices.delete(service);
+    btn.setAttribute('aria-pressed', String(nowOn));
+    document.getElementById('section-' + service).hidden = !nowOn;
+    document.getElementById('no-service-note').hidden = activeServices.size > 0;
+    document.getElementById('quote-summary').style.display = pricedServicesActive() ? 'block' : 'none';
     renderSummary();
   });
 
-  // ---- Cerakote panel ----
-  function renderCerakotePanel() {
+  function pricedServicesActive() {
+    return activeServices.has('cerakote') || activeServices.has('stippling') || activeServices.has('laser');
+  }
+
+  // ---- Cerakote section ----
+  function renderCerakoteSection() {
     const sel = document.getElementById('q-cerakote-firearm');
     sel.innerHTML = Object.entries(MFS_PRICING.CERAKOTE).map(([key, cfg]) => `<option value="${key}">${cfg.label}</option>`).join('');
     sel.value = cerakoteFirearm;
@@ -248,8 +261,8 @@
     return { lines, total, summary: `Cerakote (${cfg.label})` };
   }
 
-  // ---- Stippling panel ----
-  function renderStipplingPanel() {
+  // ---- Stippling section ----
+  function renderStipplingSection() {
     const pkgEl = document.getElementById('stippling-packages');
     pkgEl.innerHTML = MFS_PRICING.STIPPLING_PACKAGES.map(p => `
       <label class="quote-package">
@@ -290,11 +303,11 @@
         total += a.price;
       }
     });
-    return { lines, total, summary: 'Stippling' };
+    return { lines, total, summary: `Stippling (${pkg.label})` };
   }
 
-  // ---- Laser panel ----
-  function renderLaserPanel() {
+  // ---- Laser section ----
+  function renderLaserSection() {
     const el = document.getElementById('laser-types');
     el.innerHTML = MFS_PRICING.LASER_TYPES.map(t => `
       <div class="quote-part-row">
@@ -350,38 +363,64 @@
     return { lines, total, summary: 'Laser engraving' };
   }
 
-  // ---- Summary sidebar ----
-  function currentQuote() {
-    if (activeService === 'cerakote') return cerakoteQuote();
-    if (activeService === 'stippling') return stipplingQuote();
-    if (activeService === 'laser') return laserQuote();
-    return { lines: [], total: 0, summary: null };
+  // ---- Combined summary across every active service ----
+  function activeQuotes() {
+    const quotes = [];
+    if (activeServices.has('cerakote')) quotes.push(cerakoteQuote());
+    if (activeServices.has('stippling')) quotes.push(stipplingQuote());
+    if (activeServices.has('laser')) quotes.push(laserQuote());
+    return quotes;
   }
 
   function renderSummary() {
-    const { lines, total } = currentQuote();
-    document.getElementById('quote-lines').innerHTML = lines.length
-      ? lines.map(l => `<div class="quote-line"><span>${l.label}</span><span>$${l.price.toFixed(2)}</span></div>`).join('')
-      : '<p class="fieldset-note" style="margin:0 0 10px;">Pick what you need above and the price builds itself.</p>';
+    const quotes = activeQuotes();
+    const linesEl = document.getElementById('quote-lines');
+
+    if (!quotes.length) {
+      linesEl.innerHTML = '<p class="fieldset-note" style="margin:0 0 10px;">Pick what you need above and the price builds itself.</p>';
+      document.getElementById('quote-total').textContent = '$0.00';
+      return;
+    }
+
+    let total = 0;
+    linesEl.innerHTML = quotes.map(q => {
+      total += q.total;
+      const lines = q.lines.length
+        ? q.lines.map(l => `<div class="quote-line"><span>${l.label}</span><span>$${l.price.toFixed(2)}</span></div>`).join('')
+        : '<div class="quote-line"><span>Nothing picked yet</span><span>$0.00</span></div>';
+      return `<p class="quote-service-label">${q.summary}</p>${lines}`;
+    }).join('');
     document.getElementById('quote-total').textContent = '$' + total.toFixed(2);
   }
 
   // ---- Submit ----
   document.getElementById('intakeForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const quote = currentQuote();
-    const serviceLabels = { cerakote: 'Cerakote', stippling: 'Stippling', laser: 'Laser Engraving', other: 'Other / gunsmith work' };
+    const quotes = activeQuotes();
+    const total = quotes.reduce((sum, q) => sum + q.total, 0);
+    const serviceNames = [];
+    if (activeServices.has('cerakote')) serviceNames.push('Cerakote');
+    if (activeServices.has('stippling')) serviceNames.push('Stippling');
+    if (activeServices.has('laser')) serviceNames.push('Laser Engraving');
+    if (activeServices.has('other')) serviceNames.push('Other / gunsmith work');
+
+    const typeParts = quotes.map(q => q.summary);
+    if (activeServices.has('other')) typeParts.push(`Other (${document.getElementById('q-other-type').value})`);
+
+    const combinedLines = quotes.length > 1
+      ? quotes.flatMap(q => q.lines.map(l => ({ label: `${q.summary}: ${l.label}`, price: l.price })))
+      : quotes.flatMap(q => q.lines);
 
     const entry = {
       name: document.getElementById('i-name').value,
       phone: document.getElementById('i-phone').value,
       email: document.getElementById('i-email').value,
-      service: serviceLabels[activeService],
-      type: activeService === 'other' ? document.getElementById('q-other-type').value : quote.summary,
+      service: serviceNames.join(', ') || 'Not specified',
+      type: typeParts.join(' + ') || (activeServices.has('other') ? document.getElementById('q-other-type').value : ''),
       caliber: document.getElementById('i-caliber').value,
       notes: document.getElementById('i-notes').value,
-      estimate: activeService === 'other' ? null : quote.total,
-      estimateLines: quote.lines,
+      estimate: quotes.length ? total : null,
+      estimateLines: combinedLines,
     };
     MFS.addIntake(entry);
 
@@ -403,9 +442,9 @@
     });
   }
 
-  renderCerakotePanel();
-  renderStipplingPanel();
-  renderLaserPanel();
+  renderCerakoteSection();
+  renderStipplingSection();
+  renderLaserSection();
   renderSummary();
   renderCartBadge();
 </script>

@@ -952,6 +952,68 @@ a { color: inherit; }
   margin: -24px 0 40px;
 }
 
+/* ---------- Service toggles (intake page, multi-select) ---------- */
+
+.service-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.service-toggles button {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  background: transparent;
+  border: 2px solid var(--line);
+  color: var(--ink);
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.service-toggles button::before {
+  content: '+ ';
+  color: var(--ink-soft);
+}
+
+.service-toggles button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.service-toggles button[aria-pressed="true"]::before {
+  content: '✓ ';
+  color: #fff;
+}
+
+.quote-section-head {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0 0 12px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.quote-section:first-of-type .quote-section-head {
+  border-top: none;
+  padding-top: 0;
+}
+
+.quote-service-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--rust);
+  text-transform: uppercase;
+  margin: 14px 0 4px;
+}
+
+.quote-service-label:first-child { margin-top: 0; }
+
 /* ---------- Stat row ---------- */
 
 .stat-row {
