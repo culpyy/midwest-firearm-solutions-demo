@@ -11,7 +11,7 @@ function ticketHTML(job, { withAdvance }) {
   const nextLabel = MFS.STAGE_LABEL[MFS.STAGES[advanceIndex]];
   const advanceBtn = withAdvance
     ? (nextLabel
-        ? `<button type="button" class="ticket-advance" data-code="${job.code}">Move to "${nextLabel}"</button>`
+        ? `<button type="button" class="ticket-advance" data-code="${job.code}">${nextLabel}</button>`
         : `<button type="button" class="ticket-advance" disabled>Done</button>`)
     : '';
 

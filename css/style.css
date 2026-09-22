@@ -40,6 +40,14 @@ img { max-width: 100%; display: block; }
 
 a { color: inherit; }
 
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--ink);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 .wrap {
   max-width: 1180px;
   margin: 0 auto;
@@ -1114,25 +1122,38 @@ a { color: inherit; }
 .stamp-ready  { color: #276b3f; }
 
 .ticket-advance {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: none;
-  border: none;
+  border: 1px solid var(--ink);
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--ink-soft);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 8px 13px;
+  white-space: nowrap;
   cursor: pointer;
-  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.ticket-advance:hover { color: var(--rust); }
+.ticket-advance::after {
+  content: '→';
+  font-size: 13px;
+}
+
+.ticket-advance:hover { background: var(--ink); color: #fff; }
 
 .ticket-advance:disabled {
+  border-color: #d8d2c4;
   color: #bfb9ac;
-  text-decoration: none;
   cursor: default;
+  background: none;
 }
+
+.ticket-advance:disabled::after { content: ''; }
 
 /* ---------- Footer / CTA ---------- */
 
