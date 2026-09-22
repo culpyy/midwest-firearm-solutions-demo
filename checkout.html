@@ -127,6 +127,7 @@
         customer: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value.charAt(0) + '.',
       });
       MFS.clearCart();
+      renderCartBadge();
       el.innerHTML = `
         <div class="confirm-panel">
           <p class="eyebrow">ORDER PLACED</p>
