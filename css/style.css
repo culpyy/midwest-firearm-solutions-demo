@@ -440,6 +440,102 @@ a { color: inherit; }
 
 .form-check input { margin-top: 3px; }
 
+/* ---------- Pricing configurator (intake page) ---------- */
+
+.quote-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: start;
+}
+
+.quote-part-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.quote-part-row:first-child { border-top: 1px solid var(--line); }
+
+.quote-part-row input { margin-top: 3px; flex-shrink: 0; }
+
+.quote-part-row label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.quote-part-row .note {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.quote-part-price {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.quote-starting-at {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--steel);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.quote-package {
+  display: block;
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.quote-package:has(input:checked) {
+  border-color: var(--ink);
+  background: var(--paper-dim);
+}
+
+.quote-package input { margin-right: 10px; }
+
+.quote-package .pkg-head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.quote-package .pkg-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 6px 0 0 24px;
+}
+
+.quote-word-input {
+  width: 70px;
+  border: 1px solid var(--line);
+  padding: 6px 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  margin-left: 10px;
+}
+
+.quote-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--ink-soft);
+  padding: 6px 0;
+}
+
 .fieldset-note {
   font-size: 12px;
   color: var(--ink-soft);
@@ -662,6 +758,7 @@ a { color: inherit; }
 
 @media (max-width: 880px) {
   .cart-layout { grid-template-columns: 1fr; }
+  .quote-layout { grid-template-columns: 1fr; }
   .order-summary { position: static; }
   .form-row { grid-template-columns: 1fr; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }

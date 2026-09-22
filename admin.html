@@ -184,8 +184,9 @@
       <div class="admin-row">
         <div class="meta-code">${new Date(entry.submittedAt).toLocaleDateString()}</div>
         <div>
-          <div class="meta-title">${entry.name} · ${entry.service || 'Not specified'}</div>
+          <div class="meta-title">${entry.name} · ${entry.service || 'Not specified'}${entry.estimate ? ` · $${entry.estimate.toFixed(2)} est.` : ''}</div>
           <div class="meta-sub">${entry.type || ''}${entry.caliber ? ', ' + entry.caliber : ''} · ${entry.phone} · ${entry.email}</div>
+          ${entry.estimateLines && entry.estimateLines.length ? `<div class="meta-sub">${entry.estimateLines.map(l => l.label).join(', ')}</div>` : ''}
           ${entry.notes ? `<div class="meta-sub" style="font-style:italic;">"${entry.notes}"</div>` : ''}
         </div>
         <button type="button" class="btn-outline" data-start-build="${i}">Start build →</button>
