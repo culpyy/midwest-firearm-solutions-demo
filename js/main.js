@@ -13,8 +13,8 @@ const jobs = [
     code: 'MFS-2026-014',
     title: 'Glock 48',
     spec: 'Cerakote — Purple Splinter',
-    note: 'Matches the finish in the photo above. Customer notified.',
-    stage: 'ready',
+    note: 'The purple splinter finish in the photo above.',
+    stage: 'curing',
   },
   {
     code: 'MFS-2026-015',
@@ -109,6 +109,7 @@ function renderShopRail() {
       if (idx < STAGES.length - 1) job.stage = STAGES[idx + 1];
       renderShopStats();
       renderShopRail();
+      renderCustomerRail();
     });
   });
 }
