@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Owner View — a preview for Midwest Firearm Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="honesty-strip">
+  This is the shop owner side of the preview — what you and your team would see. Nothing here is connected to a real shop. <button type="button" class="reset-demo-link" id="resetDemo" style="color:#fff;">Reset demo data</button>
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1557428269722-XQZC1AXJ4QPPJ8KAMIF2/MidwestFirearmsSoultions.jpg" alt="Midwest Firearm Solutions">
+      <span class="brand-name">Midwest Firearm<br>Solutions</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="intake.html">Send Us a Build</a></li>
+    </ul>
+    <div class="nav-utility">
+      <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" data-cart-count>0</span></a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">SHOP OWNER VIEW</p>
+    <h1>Everything, one screen.</h1>
+    <p>Builds in progress, orders, inventory, incoming intake forms, and reviews waiting on approval — the operational side nobody outside the shop sees.</p>
+  </div>
+</header>
+
+<section class="section admin-shell" style="padding-top:40px;">
+  <div class="wrap">
+    <div class="admin-tabs" role="tablist">
+      <button type="button" role="tab" data-tab="builds" aria-selected="true">Builds</button>
+      <button type="button" role="tab" data-tab="orders" aria-selected="false">Orders</button>
+      <button type="button" role="tab" data-tab="products" aria-selected="false">Products</button>
+      <button type="button" role="tab" data-tab="intake" aria-selected="false">Intake <span id="intakeCount"></span></button>
+      <button type="button" role="tab" data-tab="reviews" aria-selected="false">Reviews <span id="reviewsPendingCount"></span></button>
+    </div>
+
+    <div class="admin-panel is-active" id="panel-builds">
+      <div class="stat-row" id="admin-shop-stats"></div>
+      <div class="ticket-rail" id="admin-shop-rail"></div>
+    </div>
+
+    <div class="admin-panel" id="panel-orders">
+      <div class="stat-row" id="orders-stats"></div>
+      <div id="orders-rail"></div>
+    </div>
+
+    <div class="admin-panel" id="panel-products">
+      <div id="products-rail"></div>
+    </div>
+
+    <div class="admin-panel" id="panel-intake">
+      <div id="intake-rail"></div>
+    </div>
+
+    <div class="admin-panel" id="panel-reviews">
+      <div id="reviews-rail"></div>
+    </div>
+  </div>
+</section>
+
+<script src="js/store.js"></script>
+<script>
+  // ---- Tabs ----
+  function initAdminTabs() {
+    const tabs = document.querySelectorAll('.admin-tabs [data-tab]');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.setAttribute('aria-selected', String(t === tab)));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('is-active'));
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('is-active');
+      });
+    });
+  }
+
+  // ---- Builds tab (shared with index.html's tracker) ----
+  function stampClass(stage) {
+    return { queued: 'stamp-queued', booth: 'stamp-booth', curing: 'stamp-curing', ready: 'stamp-ready' }[stage];
+  }
+
+  function ticketHTML(job) {
+    const advanceIndex = MFS.STAGES.indexOf(job.stage) + 1;
+    const nextLabel = MFS.STAGE_LABEL[MFS.STAGES[advanceIndex]];
+    const advanceBtn = nextLabel
+      ? `<button type="button" class="ticket-advance" data-code="${job.code}">Move to "${nextLabel}"</button>`
+      : `<button type="button" class="ticket-advance" disabled>Done</button>`;
+    return `
+      <div class="ticket">
+        <div class="ticket-code">${job.code}</div>
+        <div class="ticket-body">
+          <h3>${job.title}</h3>
+          <p class="spec">${job.spec}</p>
+          <p class="note">${job.note}</p>
+        </div>
+        <div class="ticket-status">
+          <span class="stamp ${stampClass(job.stage)}">${MFS.STAGE_LABEL[job.stage]}</span>
+          ${advanceBtn}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderBuilds() {
+    const jobs = MFS.getJobs();
+    const counts = MFS.STAGES.reduce((acc, s) => ({ ...acc, [s]: 0 }), {});
+    jobs.forEach(j => counts[j.stage]++);
+    document.getElementById('admin-shop-stats').innerHTML = `
+      <div class="stat"><div class="num">${jobs.length}</div><div class="label">Jobs in the shop</div></div>
+      <div class="stat"><div class="num">${counts.booth + counts.curing}</div><div class="label">In progress</div></div>
+      <div class="stat"><div class="num">${counts.ready}</div><div class="label">Ready for pickup</div></div>
+    `;
+    const rail = document.getElementById('admin-shop-rail');
+    rail.innerHTML = jobs.map(ticketHTML).join('');
+    rail.querySelectorAll('.ticket-advance[data-code]').forEach(btn => {
+      btn.addEventListener('click', () => { MFS.advanceJob(btn.dataset.code); renderBuilds(); });
+    });
+  }
+
+  // ---- Orders tab ----
+  function renderOrders() {
+    const orders = MFS.getOrders();
+    const revenue = orders.reduce((sum, o) => sum + o.total, 0);
+    document.getElementById('orders-stats').innerHTML = `
+      <div class="stat"><div class="num">${orders.length}</div><div class="label">Orders</div></div>
+      <div class="stat"><div class="num">$${revenue.toFixed(0)}</div><div class="label">Revenue (demo)</div></div>
+      <div class="stat"><div class="num">$${orders.length ? (revenue / orders.length).toFixed(0) : '0'}</div><div class="label">Avg. order</div></div>
+    `;
+    const rail = document.getElementById('orders-rail');
+    rail.innerHTML = orders.length ? orders.map(o => `
+      <div class="admin-row">
+        <div class="meta-code">${o.id}</div>
+        <div>
+          <div class="meta-title">${o.items}</div>
+          <div class="meta-sub">${o.customer} · $${o.total.toFixed(2)}</div>
+        </div>
+        <span class="stamp ${o.status === 'shipped' ? 'stamp-ready' : o.status === 'pickup ready' ? 'stamp-curing' : 'stamp-booth'}">${o.status}</span>
+      </div>
+    `).join('') : '<div class="admin-empty">No orders yet — place one from the shop to see it land here.</div>';
+  }
+
+  // ---- Products tab ----
+  function renderProducts() {
+    const rail = document.getElementById('products-rail');
+    rail.innerHTML = MFS.PRODUCTS.map(p => `
+      <div class="admin-row">
+        <div class="meta-code">${p.id.toUpperCase()}</div>
+        <div>
+          <div class="meta-title">${p.name}</div>
+          <div class="meta-sub">$${p.price.toFixed(2)} · ${p.stock} in stock</div>
+        </div>
+        <span class="stamp ${p.stock > 5 ? 'stamp-ready' : 'stamp-booth'}">${p.stock > 5 ? 'In stock' : 'Low stock'}</span>
+      </div>
+    `).join('');
+  }
+
+  // ---- Intake tab ----
+  function renderIntake() {
+    const list = MFS.getIntake();
+    document.getElementById('intakeCount').textContent = list.length ? `(${list.length})` : '';
+    const rail = document.getElementById('intake-rail');
+    rail.innerHTML = list.length ? list.map((entry, i) => `
+      <div class="admin-row">
+        <div class="meta-code">${new Date(entry.submittedAt).toLocaleDateString()}</div>
+        <div>
+          <div class="meta-title">${entry.name} — ${entry.service || 'Not specified'}</div>
+          <div class="meta-sub">${entry.type || ''}${entry.caliber ? ', ' + entry.caliber : ''} · ${entry.phone} · ${entry.email}</div>
+          ${entry.notes ? `<div class="meta-sub" style="font-style:italic;">"${entry.notes}"</div>` : ''}
+        </div>
+        <button type="button" class="btn-outline" data-start-build="${i}">Start build →</button>
+      </div>
+    `).join('') : '<div class="admin-empty">No intake submissions yet — submit the "Send Us a Build" form to see one land here.</div>';
+
+    rail.querySelectorAll('[data-start-build]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const entry = list[parseInt(btn.dataset.startBuild, 10)];
+        const jobs = MFS.getJobs();
+        const code = 'MFS-2026-0' + (20 + jobs.length);
+        jobs.push({
+          code,
+          title: entry.type || 'Customer build',
+          spec: entry.service + (entry.caliber ? ' — ' + entry.caliber : ''),
+          note: entry.notes || `Dropped off by ${entry.name}.`,
+          stage: 'queued',
+          customer: 'other',
+        });
+        MFS.saveJobs(jobs);
+        btn.textContent = 'Added to Builds ✓';
+        btn.disabled = true;
+        renderBuilds();
+      });
+    });
+  }
+
+  // ---- Reviews tab ----
+  function renderReviewsAdmin() {
+    const list = MFS.getReviews();
+    const pending = list.filter(r => r.stage === 'pending');
+    document.getElementById('reviewsPendingCount').textContent = pending.length ? `(${pending.length})` : '';
+    const rail = document.getElementById('reviews-rail');
+    rail.innerHTML = list.map((r, i) => `
+      <div class="admin-row">
+        <div class="meta-code">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+        <div>
+          <div class="meta-title">${r.name}${r.stage === 'pending' ? '<span class="review-pending-tag">Pending</span>' : ''}</div>
+          <div class="meta-sub">${r.text}</div>
+        </div>
+        ${r.stage === 'pending' ? `<button type="button" class="btn-outline" data-approve="${i}">Approve</button>` : `<span class="stamp stamp-ready">Published</span>`}
+      </div>
+    `).join('');
+    rail.querySelectorAll('[data-approve]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        MFS.approveReview(parseInt(btn.dataset.approve, 10));
+        renderReviewsAdmin();
+      });
+    });
+  }
+
+  function renderCartBadge() {
+    const count = MFS.cartCount();
+    document.querySelectorAll('[data-cart-count]').forEach(el => {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'inline-flex' : 'none';
+    });
+  }
+
+  document.getElementById('resetDemo').addEventListener('click', () => {
+    if (confirm('Reset all demo data back to the starting point?')) MFS.resetDemo();
+  });
+
+  initAdminTabs();
+  renderBuilds();
+  renderOrders();
+  renderProducts();
+  renderIntake();
+  renderReviewsAdmin();
+  renderCartBadge();
+</script>
+</body>
+</html>

@@ -24,12 +24,16 @@
     </div>
     <ul class="nav-links">
       <li><a href="#top">Home</a></li>
-      <li><a href="https://www.midwestfirearmsolutions.com/about" target="_blank" rel="noopener">About</a></li>
-      <li><a href="https://www.midwestfirearmsolutions.com/shop" target="_blank" rel="noopener">Shop</a></li>
-      <li><a href="https://www.midwestfirearmsolutions.com/gallery" target="_blank" rel="noopener">Gallery</a></li>
-      <li><a href="https://www.midwestfirearmsolutions.com/contact" target="_blank" rel="noopener">Contact</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="intake.html">Send Us a Build</a></li>
       <li><a href="#tracker" class="nav-new">Track My Build</a></li>
     </ul>
+    <div class="nav-utility">
+      <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" data-cart-count>0</span></a>
+      <a href="admin.html" class="nav-admin-link">Shop owner view →</a>
+    </div>
   </div>
 </nav>
 
@@ -62,7 +66,7 @@
     </div>
 
     <div id="panel-customer" role="tabpanel" aria-labelledby="tab-customer">
-      <p class="view-switch-note">What a customer sees when they check their own build.</p>
+      <p class="view-switch-note">What a customer sees when they check on their builds — everything they've dropped off, in one place.</p>
       <div class="ticket-rail" id="customer-rail"></div>
     </div>
 
@@ -74,11 +78,50 @@
   </div>
 </section>
 
+<section class="section" style="border-top:none;padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>The build tracker is one piece.</h2>
+      <p>The same kind of site runs your shop, your checkout, and your customer's whole visit — not just the status page. A few other pieces, working the same way:</p>
+    </div>
+    <div class="ticket-rail">
+      <div class="shop-row" style="grid-template-columns:1fr auto;">
+        <div class="shop-row-body">
+          <h3><a href="shop.html" style="text-decoration:none;">Shop &amp; checkout</a></h3>
+          <p class="spec">Real products, a working cart, and checkout — no Squarespace commerce fees.</p>
+        </div>
+        <a href="shop.html" class="text-link" style="white-space:nowrap;">Browse the shop →</a>
+      </div>
+      <div class="shop-row" style="grid-template-columns:1fr auto;">
+        <div class="shop-row-body">
+          <h3><a href="intake.html" style="text-decoration:none;">Customer intake</a></h3>
+          <p class="spec">Someone drops off or ships in a build — it's logged the second the form's submitted, no phone tag.</p>
+        </div>
+        <a href="intake.html" class="text-link" style="white-space:nowrap;">Try the form →</a>
+      </div>
+      <div class="shop-row" style="grid-template-columns:1fr auto;">
+        <div class="shop-row-body">
+          <h3><a href="gallery.html" style="text-decoration:none;">Gallery &amp; reviews</a></h3>
+          <p class="spec">Finished work and customer feedback, out front where people can see it.</p>
+        </div>
+        <a href="gallery.html" class="text-link" style="white-space:nowrap;">See the gallery →</a>
+      </div>
+      <div class="shop-row" style="grid-template-columns:1fr auto;">
+        <div class="shop-row-body">
+          <h3><a href="admin.html" style="text-decoration:none;">One dashboard for all of it</a></h3>
+          <p class="spec">Builds, orders, inventory, intake, and reviews waiting on approval — one screen for you and your team.</p>
+        </div>
+        <a href="admin.html" class="text-link" style="white-space:nowrap;">See the shop owner view →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="footer-cta">
   <div class="wrap">
     <div>
       <h2>Want this running on your real site?</h2>
-      <p>It plugs into midwestfirearmsolutions.com without touching your Squarespace setup — your customers just get a "Track My Build" link, and you get the shop view. Takes about a week to stand up.</p>
+      <p>Tracker, shop, intake, gallery, reviews, and the dashboard that ties it together — sitting on midwestfirearmsolutions.com without touching your Squarespace setup.</p>
       <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0Lpo5Nd4sd_wurOKgGnlsgAUlLgyu8I7pen_Otehfo7-ETHXkS8Aj_qbULyfHv65B463_g2GWZ" target="_blank" rel="noopener" class="btn-primary">Book a 30-minute call</a>
     </div>
     <div class="footer-contact">
@@ -93,6 +136,7 @@
   </div>
 </section>
 
+<script src="js/store.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

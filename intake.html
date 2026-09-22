@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Send Us a Build — a preview for Midwest Firearm Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="honesty-strip">
+  A preview built for Midwest Firearm Solutions by Elkhorn Digital — not connected to your live site or data. Your real site stays at <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">midwestfirearmsolutions.com</a>.
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1557428269722-XQZC1AXJ4QPPJ8KAMIF2/MidwestFirearmsSoultions.jpg" alt="Midwest Firearm Solutions">
+      <span class="brand-name">Midwest Firearm<br>Solutions</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="intake.html">Send Us a Build</a></li>
+      <li><a href="index.html#tracker" class="nav-new">Track My Build</a></li>
+    </ul>
+    <div class="nav-utility">
+      <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" data-cart-count>0</span></a>
+      <a href="admin.html" class="nav-admin-link">Shop owner view →</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">DROP OFF OR SHIP IN</p>
+    <h1>Tell us what you're sending.</h1>
+    <p>Whether you're walking it in or shipping it to us, fill this out first so it's logged the second it arrives.</p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:48px;">
+  <div class="wrap">
+    <div id="intake-content" class="form-card">
+      <form id="intakeForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="i-name">Full name</label>
+            <input type="text" id="i-name" required>
+          </div>
+          <div class="form-group">
+            <label for="i-phone">Phone</label>
+            <input type="tel" id="i-phone" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="i-email">Email</label>
+          <input type="email" id="i-email" required>
+        </div>
+        <div class="form-group">
+          <label for="i-service">What's this for?</label>
+          <select id="i-service" required>
+            <option value="">Choose one</option>
+            <option>Cerakote</option>
+            <option>Stippling</option>
+            <option>Laser Engraving</option>
+            <option>Gunsmith work</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="i-type">Firearm type</label>
+            <select id="i-type">
+              <option>Handgun</option>
+              <option>AR-pattern rifle</option>
+              <option>AK-pattern rifle</option>
+              <option>Bolt action rifle</option>
+              <option>Shotgun</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="i-caliber">Caliber (optional)</label>
+            <input type="text" id="i-caliber">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="i-notes">Notes</label>
+          <textarea id="i-notes" placeholder="Color, pattern, what you want done..."></textarea>
+        </div>
+        <p class="fieldset-note">Demo form — this logs to the shop owner view on this device only. Nothing is emailed or shipped anywhere.</p>
+        <button type="submit" class="btn-primary" style="width:100%;">Submit</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script src="js/store.js"></script>
+<script>
+  document.getElementById('intakeForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const entry = {
+      name: document.getElementById('i-name').value,
+      phone: document.getElementById('i-phone').value,
+      email: document.getElementById('i-email').value,
+      service: document.getElementById('i-service').value,
+      type: document.getElementById('i-type').value,
+      caliber: document.getElementById('i-caliber').value,
+      notes: document.getElementById('i-notes').value,
+    };
+    MFS.addIntake(entry);
+
+    document.getElementById('intake-content').innerHTML = `
+      <div class="confirm-panel">
+        <p class="eyebrow">LOGGED</p>
+        <h2>You're set, ${entry.name.split(' ')[0] || 'thanks'}.</h2>
+        <p>This just showed up on the shop owner's Intake tab — that's the point of the thing.</p>
+        <a href="admin.html" class="btn-primary" style="margin-top:20px;display:inline-block;">See it on the shop owner side →</a>
+      </div>
+    `;
+  });
+
+  function renderCartBadge() {
+    const count = MFS.cartCount();
+    document.querySelectorAll('[data-cart-count]').forEach(el => {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'inline-flex' : 'none';
+    });
+  }
+  renderCartBadge();
+</script>
+</body>
+</html>

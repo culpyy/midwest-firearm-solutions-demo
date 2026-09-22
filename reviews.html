@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews — a preview for Midwest Firearm Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="honesty-strip">
+  A preview built for Midwest Firearm Solutions by Elkhorn Digital — not connected to your live site or data. Your real site stays at <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">midwestfirearmsolutions.com</a>.
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1557428269722-XQZC1AXJ4QPPJ8KAMIF2/MidwestFirearmsSoultions.jpg" alt="Midwest Firearm Solutions">
+      <span class="brand-name">Midwest Firearm<br>Solutions</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="intake.html">Send Us a Build</a></li>
+      <li><a href="index.html#tracker" class="nav-new">Track My Build</a></li>
+    </ul>
+    <div class="nav-utility">
+      <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" data-cart-count>0</span></a>
+      <a href="admin.html" class="nav-admin-link">Shop owner view →</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">REVIEWS</p>
+    <h1>What customers say.</h1>
+  </div>
+</header>
+
+<section class="section" style="padding-top:48px;">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:56px;align-items:start;">
+      <div id="review-list"></div>
+
+      <div class="form-card">
+        <h3 style="font-family:var(--font-display);font-weight:700;font-size:22px;margin:0 0 20px;">Leave a review</h3>
+        <form id="reviewForm">
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="rating-select" id="ratingSelect">
+              <button type="button" data-star="1">1</button>
+              <button type="button" data-star="2">2</button>
+              <button type="button" data-star="3">3</button>
+              <button type="button" data-star="4">4</button>
+              <button type="button" data-star="5">5</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="r-name">Name</label>
+            <input type="text" id="r-name" required>
+          </div>
+          <div class="form-group">
+            <label for="r-text">Review</label>
+            <textarea id="r-text" required></textarea>
+          </div>
+          <p class="fieldset-note">Demo form — new reviews land as "pending" on the shop owner's Reviews tab until approved.</p>
+          <button type="submit" class="btn-primary" style="width:100%;">Submit review</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/store.js"></script>
+<script>
+  let rating = 5;
+
+  function renderReviews() {
+    const el = document.getElementById('review-list');
+    const published = MFS.getReviews().filter(r => r.stage === 'published');
+    el.innerHTML = published.map(r => `
+      <div class="review-card">
+        <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+        <p class="body">${r.text}</p>
+        <div class="review-name">${r.name}</div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('ratingSelect').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-star]');
+    if (!btn) return;
+    rating = parseInt(btn.dataset.star, 10);
+    document.querySelectorAll('#ratingSelect button').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.star, 10) <= rating);
+    });
+  });
+  document.querySelectorAll('#ratingSelect button').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.star, 10) <= rating);
+  });
+
+  document.getElementById('reviewForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    MFS.addReview({
+      name: document.getElementById('r-name').value,
+      text: document.getElementById('r-text').value,
+      rating,
+    });
+    e.target.closest('.form-card').innerHTML = `
+      <div class="confirm-panel">
+        <p class="eyebrow">SUBMITTED</p>
+        <h2>Thanks — sent for approval.</h2>
+        <p>It's sitting on the shop owner's Reviews tab as pending right now.</p>
+        <a href="admin.html" class="btn-primary" style="margin-top:20px;display:inline-block;">See it on the shop owner side →</a>
+      </div>
+    `;
+  });
+
+  function renderCartBadge() {
+    const count = MFS.cartCount();
+    document.querySelectorAll('[data-cart-count]').forEach(el => {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'inline-flex' : 'none';
+    });
+  }
+
+  renderReviews();
+  renderCartBadge();
+</script>
+</body>
+</html>

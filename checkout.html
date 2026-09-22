@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — a preview for Midwest Firearm Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="honesty-strip">
+  A preview built for Midwest Firearm Solutions by Elkhorn Digital — no real payment is processed on this page. Your real site stays at <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">midwestfirearmsolutions.com</a>.
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1557428269722-XQZC1AXJ4QPPJ8KAMIF2/MidwestFirearmsSoultions.jpg" alt="Midwest Firearm Solutions">
+      <span class="brand-name">Midwest Firearm<br>Solutions</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="intake.html">Send Us a Build</a></li>
+      <li><a href="index.html#tracker" class="nav-new">Track My Build</a></li>
+    </ul>
+    <div class="nav-utility">
+      <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" data-cart-count>0</span></a>
+      <a href="admin.html" class="nav-admin-link">Shop owner view →</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">CHECKOUT</p>
+    <h1>Checkout.</h1>
+  </div>
+</header>
+
+<section class="section" style="padding-top:48px;">
+  <div class="wrap">
+    <div id="checkout-content"></div>
+  </div>
+</section>
+
+<script src="js/store.js"></script>
+<script>
+  function renderCheckout() {
+    const cart = MFS.getCart();
+    const el = document.getElementById('checkout-content');
+
+    if (cart.length === 0) {
+      el.innerHTML = `
+        <div class="cart-empty">
+          <p>Your cart is empty, so there's nothing to check out.</p>
+          <a href="shop.html" class="btn-primary" style="margin-top:16px;display:inline-block;">Go to shop</a>
+        </div>`;
+      return;
+    }
+
+    const total = MFS.cartTotal();
+    const summaryLines = cart.map(i => `<div class="summary-line"><span>${i.name} × ${i.qty}</span><span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('');
+
+    el.innerHTML = `
+      <div class="cart-layout">
+        <form class="form-card" id="checkoutForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First name</label>
+              <input type="text" id="firstName" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last name</label>
+              <input type="text" id="lastName" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="fulfillment">Pickup or ship?</label>
+            <select id="fulfillment">
+              <option value="pickup">Pick up in shop</option>
+              <option value="ship">Ship it to me</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cardNumber">Card number</label>
+            <input type="text" id="cardNumber" inputmode="numeric" placeholder="4111 1111 1111 1111" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cardExp">Expiration (MM/YY)</label>
+              <input type="text" id="cardExp" placeholder="MM/YY" required>
+            </div>
+            <div class="form-group">
+              <label for="cardCvv">CVV</label>
+              <input type="text" id="cardCvv" inputmode="numeric" maxlength="4" placeholder="123" required>
+            </div>
+          </div>
+          <p class="fieldset-note">Demo checkout — this form doesn't send anywhere and no card is charged.</p>
+          <button type="submit" class="btn-primary" style="width:100%;">Place order — $${total.toFixed(2)}</button>
+        </form>
+        <div class="order-summary">
+          <h3>Order summary</h3>
+          ${summaryLines}
+          <div class="summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const orderId = 'MFS-ORD-' + Math.floor(2000 + Math.random() * 900);
+      MFS.addOrder({
+        id: orderId,
+        items: cart.map(i => `${i.name} x${i.qty}`).join(', '),
+        total: total,
+        status: 'processing',
+        customer: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value.charAt(0) + '.',
+      });
+      MFS.clearCart();
+      el.innerHTML = `
+        <div class="confirm-panel">
+          <p class="eyebrow">ORDER PLACED</p>
+          <h2>Order ${orderId}</h2>
+          <p>This is a demo — no card was actually charged. In the real thing, ${document.getElementById('email').value || 'the customer'} gets a confirmation email and the order shows up on your Orders tab.</p>
+          <a href="admin.html" class="btn-primary" style="margin-top:20px;display:inline-block;">See it on the shop owner side →</a>
+        </div>
+      `;
+    });
+  }
+
+  function renderCartBadge() {
+    const count = MFS.cartCount();
+    document.querySelectorAll('[data-cart-count]').forEach(el => {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'inline-flex' : 'none';
+    });
+  }
+
+  renderCheckout();
+  renderCartBadge();
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart — a preview for Midwest Firearm Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="honesty-strip">
+  A preview built for Midwest Firearm Solutions by Elkhorn Digital — not connected to your live site or data. Your real site stays at <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">midwestfirearmsolutions.com</a>.
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1557428269722-XQZC1AXJ4QPPJ8KAMIF2/MidwestFirearmsSoultions.jpg" alt="Midwest Firearm Solutions">
+      <span class="brand-name">Midwest Firearm<br>Solutions</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="intake.html">Send Us a Build</a></li>
+      <li><a href="index.html#tracker" class="nav-new">Track My Build</a></li>
+    </ul>
+    <div class="nav-utility">
+      <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" data-cart-count>0</span></a>
+      <a href="admin.html" class="nav-admin-link">Shop owner view →</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">CART</p>
+    <h1>Your cart.</h1>
+  </div>
+</header>
+
+<section class="section" style="padding-top:48px;">
+  <div class="wrap">
+    <div id="cart-content"></div>
+  </div>
+</section>
+
+<script src="js/store.js"></script>
+<script>
+  function renderCart() {
+    const cart = MFS.getCart();
+    const el = document.getElementById('cart-content');
+
+    if (cart.length === 0) {
+      el.innerHTML = `
+        <div class="cart-empty">
+          <p>Nothing in the cart yet.</p>
+          <a href="shop.html" class="btn-primary" style="margin-top:16px;display:inline-block;">Go to shop</a>
+        </div>`;
+      return;
+    }
+
+    const lines = cart.map(i => `
+      <div class="cart-line">
+        <div>
+          <div class="name">${i.name}</div>
+          <div class="unit-price">$${i.price.toFixed(2)} each</div>
+        </div>
+        <div class="qty-stepper">
+          <button type="button" data-qty-down="${i.id}">−</button>
+          <span class="qty-val">${i.qty}</span>
+          <button type="button" data-qty-up="${i.id}">+</button>
+        </div>
+        <div class="shop-price">$${(i.price * i.qty).toFixed(2)}</div>
+        <button type="button" class="cart-remove" data-remove="${i.id}">Remove</button>
+      </div>
+    `).join('');
+
+    const total = MFS.cartTotal();
+
+    el.innerHTML = `
+      <div class="cart-layout">
+        <div>${lines}</div>
+        <div class="order-summary">
+          <h3>Order summary</h3>
+          <div class="summary-line"><span>Subtotal</span><span>$${total.toFixed(2)}</span></div>
+          <div class="summary-line"><span>Shipping</span><span>Calculated at checkout</span></div>
+          <div class="summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+          <a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;margin-top:20px;">Go to checkout</a>
+        </div>
+      </div>
+    `;
+
+    el.querySelectorAll('[data-qty-up]').forEach(b => b.addEventListener('click', () => {
+      const item = MFS.getCart().find(i => i.id === b.dataset.qtyUp);
+      MFS.updateCartQty(item.id, item.qty + 1);
+      renderCart();
+    }));
+    el.querySelectorAll('[data-qty-down]').forEach(b => b.addEventListener('click', () => {
+      const item = MFS.getCart().find(i => i.id === b.dataset.qtyDown);
+      MFS.updateCartQty(item.id, item.qty - 1);
+      renderCart();
+    }));
+    el.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => {
+      MFS.removeFromCart(b.dataset.remove);
+      renderCart();
+    }));
+  }
+
+  function renderCartBadge() {
+    const count = MFS.cartCount();
+    document.querySelectorAll('[data-cart-count]').forEach(el => {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'inline-flex' : 'none';
+    });
+  }
+
+  document.addEventListener('mfs:updated', () => { renderCart(); renderCartBadge(); });
+  renderCart();
+  renderCartBadge();
+</script>
+</body>
+</html>

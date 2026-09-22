@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — a preview for Midwest Firearm Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="honesty-strip">
+  A preview built for Midwest Firearm Solutions by Elkhorn Digital — not connected to your live site or data. Your real site stays at <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">midwestfirearmsolutions.com</a>.
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1557428269722-XQZC1AXJ4QPPJ8KAMIF2/MidwestFirearmsSoultions.jpg" alt="Midwest Firearm Solutions">
+      <span class="brand-name">Midwest Firearm<br>Solutions</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="intake.html">Send Us a Build</a></li>
+      <li><a href="index.html#tracker" class="nav-new">Track My Build</a></li>
+    </ul>
+    <div class="nav-utility">
+      <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" data-cart-count>0</span></a>
+      <a href="admin.html" class="nav-admin-link">Shop owner view →</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">GALLERY</p>
+    <h1>Finished work.</h1>
+    <p>One real photo from your site below — the rest are placeholders standing in for the jobs you'd actually feature once this is live.</p>
+  </div>
+</header>
+
+<section class="section" style="padding-top:48px;">
+  <div class="wrap">
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1673027573680-M6H0SC04RO9Q3OTN8I3K/image-asset.jpeg?format=1500w" alt="Glock 48 finished in a purple and black splinter Cerakote pattern">
+        <div class="caption">Glock 48 — Purple Splinter Cerakote (real photo)</div>
+      </div>
+      <div class="gallery-item is-placeholder"><div class="placeholder-label">AR-15 Lower<br>Stippling — grip + flare</div></div>
+      <div class="gallery-item is-placeholder"><div class="placeholder-label">1911<br>Full Cerakote + laser serial</div></div>
+      <div class="gallery-item is-placeholder"><div class="placeholder-label">Bolt Rifle<br>Kryptek pattern Cerakote</div></div>
+      <div class="gallery-item is-placeholder"><div class="placeholder-label">AR Flush Mount<br>Laser engraved logo</div></div>
+      <div class="gallery-item is-placeholder"><div class="placeholder-label">Shotgun<br>Trigger + action tune</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="footer-cta">
+  <div class="wrap">
+    <div>
+      <h2>Want this running on your real site?</h2>
+      <p>Every finished job, in a gallery that fills itself in as your team closes out builds — no separate step.</p>
+      <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0Lpo5Nd4sd_wurOKgGnlsgAUlLgyu8I7pen_Otehfo7-ETHXkS8Aj_qbULyfHv65B463_g2GWZ" target="_blank" rel="noopener" class="btn-primary">Book a 30-minute call</a>
+    </div>
+    <div class="footer-contact">
+      <strong>Braeden Culp</strong>
+      <span>Elkhorn Digital, LLC</span>
+      <span>(480) 510-2081</span>
+      <a href="mailto:braeden.culp@elkhorndigital.com">braeden.culp@elkhorndigital.com</a>
+    </div>
+  </div>
+  <div class="wrap footer-meta">
+    This page is a demo. Nothing on it is connected to Midwest Firearm Solutions' real site, shop, or customer data. Built by <a href="mailto:braeden.culp@elkhorndigital.com">Elkhorn Digital</a>.
+  </div>
+</section>
+
+<script src="js/store.js"></script>
+<script>
+  function renderCartBadge() {
+    const count = MFS.cartCount();
+    document.querySelectorAll('[data-cart-count]').forEach(el => {
+      el.textContent = count;
+      el.style.display = count > 0 ? 'inline-flex' : 'none';
+    });
+  }
+  renderCartBadge();
+</script>
+</body>
+</html>
