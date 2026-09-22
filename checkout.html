@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout — a preview for Midwest Firearm Solutions</title>
+<title>Checkout: a preview for Midwest Firearm Solutions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <body>
 
 <div class="honesty-strip">
-  A preview built for Midwest Firearm Solutions by Elkhorn Digital — no real payment is processed on this page. Your real site stays at <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">midwestfirearmsolutions.com</a>.
+  A preview built for Midwest Firearm Solutions by Elkhorn Digital. No real payment is processed on this page, and midwestfirearmsolutions.com stays exactly as it is. <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">See the real thing here.</a>
 </div>
 
 <nav class="site-nav">
@@ -40,6 +40,7 @@
   <div class="wrap">
     <p class="eyebrow">CHECKOUT</p>
     <h1>Checkout.</h1>
+    <p>This is where an order actually gets placed: shipping or pickup, then payment.</p>
   </div>
 </header>
 
@@ -105,8 +106,8 @@
               <input type="text" id="cardCvv" inputmode="numeric" maxlength="4" placeholder="123" required>
             </div>
           </div>
-          <p class="fieldset-note">Demo checkout — this form doesn't send anywhere and no card is charged.</p>
-          <button type="submit" class="btn-primary" style="width:100%;">Place order — $${total.toFixed(2)}</button>
+          <p class="fieldset-note">Demo checkout: this form doesn't send anywhere, and no card is charged.</p>
+          <button type="submit" class="btn-primary" style="width:100%;">Place order ($${total.toFixed(2)})</button>
         </form>
         <div class="order-summary">
           <h3>Order summary</h3>
@@ -132,7 +133,7 @@
         <div class="confirm-panel">
           <p class="eyebrow">ORDER PLACED</p>
           <h2>Order ${orderId}</h2>
-          <p>This is a demo — no card was actually charged. In the real thing, ${document.getElementById('email').value || 'the customer'} gets a confirmation email and the order shows up on your Orders tab.</p>
+          <p>This is a demo, so no card was actually charged. On the real thing, ${document.getElementById('email').value || 'the customer'} would get a confirmation email, and the order would already be sitting on your Orders tab.</p>
           <a href="admin.html" class="btn-primary" style="margin-top:20px;display:inline-block;">See it on the shop owner side →</a>
         </div>
       `;

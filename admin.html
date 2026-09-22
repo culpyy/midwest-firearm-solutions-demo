@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shop Owner View — a preview for Midwest Firearm Solutions</title>
+<title>Shop Owner View: a preview for Midwest Firearm Solutions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <body>
 
 <div class="honesty-strip">
-  This is the shop owner side of the preview — what you and your team would see. Nothing here is connected to a real shop. <button type="button" class="reset-demo-link" id="resetDemo" style="color:#fff;">Reset demo data</button>
+  This is the shop owner side of the preview: what you and your team would see day to day. Nothing here is connected to a real shop. <button type="button" class="reset-demo-link" id="resetDemo" style="color:#fff;">Reset demo data</button>
 </div>
 
 <nav class="site-nav">
@@ -38,7 +38,7 @@
   <div class="wrap">
     <p class="eyebrow">SHOP OWNER VIEW</p>
     <h1>Everything, one screen.</h1>
-    <p>Builds in progress, orders, inventory, incoming intake forms, and reviews waiting on approval — the operational side nobody outside the shop sees.</p>
+    <p>Builds in progress, orders, inventory, incoming intake forms, and reviews waiting on approval. This is the operational side nobody outside the shop ever sees.</p>
   </div>
 </header>
 
@@ -53,24 +53,29 @@
     </div>
 
     <div class="admin-panel is-active" id="panel-builds">
+      <p class="view-switch-note">This is every job currently in the shop. Click a job's status to move it to the next stage, and your customers see it update on their end right away.</p>
       <div class="stat-row" id="admin-shop-stats"></div>
       <div class="ticket-rail" id="admin-shop-rail"></div>
     </div>
 
     <div class="admin-panel" id="panel-orders">
+      <p class="view-switch-note">This is where shop orders land the moment someone checks out, with revenue totaled up automatically.</p>
       <div class="stat-row" id="orders-stats"></div>
       <div id="orders-rail"></div>
     </div>
 
     <div class="admin-panel" id="panel-products">
+      <p class="view-switch-note">This is your product list: what's for sale, what it costs, and what's running low.</p>
       <div id="products-rail"></div>
     </div>
 
     <div class="admin-panel" id="panel-intake">
+      <p class="view-switch-note">This is where drop-off and ship-in requests show up the second someone submits the form. Turn one into a real build with one click.</p>
       <div id="intake-rail"></div>
     </div>
 
     <div class="admin-panel" id="panel-reviews">
+      <p class="view-switch-note">This is where new reviews wait for your OK before they go live on the public Reviews page.</p>
       <div id="reviews-rail"></div>
     </div>
   </div>
@@ -152,7 +157,7 @@
         </div>
         <span class="stamp ${o.status === 'shipped' ? 'stamp-ready' : o.status === 'pickup ready' ? 'stamp-curing' : 'stamp-booth'}">${o.status}</span>
       </div>
-    `).join('') : '<div class="admin-empty">No orders yet — place one from the shop to see it land here.</div>';
+    `).join('') : '<div class="admin-empty">No orders yet. Place one from the shop to see it land here.</div>';
   }
 
   // ---- Products tab ----
@@ -179,13 +184,13 @@
       <div class="admin-row">
         <div class="meta-code">${new Date(entry.submittedAt).toLocaleDateString()}</div>
         <div>
-          <div class="meta-title">${entry.name} — ${entry.service || 'Not specified'}</div>
+          <div class="meta-title">${entry.name} · ${entry.service || 'Not specified'}</div>
           <div class="meta-sub">${entry.type || ''}${entry.caliber ? ', ' + entry.caliber : ''} · ${entry.phone} · ${entry.email}</div>
           ${entry.notes ? `<div class="meta-sub" style="font-style:italic;">"${entry.notes}"</div>` : ''}
         </div>
         <button type="button" class="btn-outline" data-start-build="${i}">Start build →</button>
       </div>
-    `).join('') : '<div class="admin-empty">No intake submissions yet — submit the "Send Us a Build" form to see one land here.</div>';
+    `).join('') : '<div class="admin-empty">No intake submissions yet. Submit the "Send Us a Build" form to see one land here.</div>';
 
     rail.querySelectorAll('[data-start-build]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -195,7 +200,7 @@
         jobs.push({
           code,
           title: entry.type || 'Customer build',
-          spec: entry.service + (entry.caliber ? ' — ' + entry.caliber : ''),
+          spec: entry.service + (entry.caliber ? ', ' + entry.caliber : ''),
           note: entry.notes || `Dropped off by ${entry.name}.`,
           stage: 'queued',
           customer: 'other',

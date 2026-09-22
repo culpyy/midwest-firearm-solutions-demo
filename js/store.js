@@ -22,18 +22,18 @@ const MFS = (() => {
   };
 
   const SEED_JOBS = [
-    { code: 'MFS-2026-014', title: 'Glock 48', spec: 'Cerakote — Purple Splinter', note: 'The purple splinter finish in the photo above.', stage: 'curing', customer: 'demo-customer' },
-    { code: 'MFS-2026-015', title: 'AR-15 Lower', spec: 'Stippling — grip + flared mag well', note: 'In the booth now, should be out by end of day.', stage: 'booth', customer: 'other' },
-    { code: 'MFS-2026-016', title: '1911', spec: 'Full Cerakote + laser serial refresh', note: 'Dropped off with the Glock 48 — coming out of the oven this afternoon.', stage: 'curing', customer: 'demo-customer' },
-    { code: 'MFS-2026-017', title: 'Bolt Rifle Stock', spec: 'Cerakote — Kryptek pattern', note: 'Next in line once the 1911 clears the booth.', stage: 'queued', customer: 'other' },
-    { code: 'MFS-2026-018', title: 'AR Flush Mount', spec: 'Laser engraved shop logo', note: 'Same customer as the Glock 48 — batching them together.', stage: 'queued', customer: 'demo-customer' },
+    { code: 'MFS-2026-014', title: 'Glock 48', spec: 'Cerakote, Purple Splinter', note: 'The purple splinter finish in the photo above.', stage: 'curing', customer: 'demo-customer' },
+    { code: 'MFS-2026-015', title: 'AR-15 Lower', spec: 'Stippling, grip + flared mag well', note: 'In the booth now, should be out by end of day.', stage: 'booth', customer: 'other' },
+    { code: 'MFS-2026-016', title: '1911', spec: 'Full Cerakote + laser serial refresh', note: 'Dropped off with the Glock 48. Coming out of the oven this afternoon.', stage: 'curing', customer: 'demo-customer' },
+    { code: 'MFS-2026-017', title: 'Bolt Rifle Stock', spec: 'Cerakote, Kryptek pattern', note: 'Next in line once the 1911 clears the booth.', stage: 'queued', customer: 'other' },
+    { code: 'MFS-2026-018', title: 'AR Flush Mount', spec: 'Laser engraved shop logo', note: 'Same customer as the Glock 48. Batching them together.', stage: 'queued', customer: 'demo-customer' },
   ];
 
   const PRODUCTS = [
     { id: 'p1', name: 'Carbon Fiber Tactical Sharpie', price: 25.00, spec: 'Because a regular Sharpie doesn’t match your build.', stock: 14 },
     { id: 'p2', name: 'AR Flush Mount', price: 20.00, spec: 'Wall-mounted, holds an AR flush against the wall.', stock: 9 },
     { id: 'p3', name: 'AR15/AR10 Receiver Set Laser Holding Fixture', price: 25.00, spec: 'Holds a receiver set square for laser engraving.', stock: 6 },
-    { id: 'p4', name: 'Digital Download — Receiver Set Laser Fixture', price: 40.00, spec: 'The cut file for the fixture above, if you’re running your own laser.', stock: 999 },
+    { id: 'p4', name: 'Digital Download: Receiver Set Laser Fixture', price: 40.00, spec: 'The cut file for the fixture above, if you’re running your own laser.', stock: 999 },
     { id: 'p5', name: '20oz Tumbler Rotary Jig', price: 25.00, spec: 'Rotary jig sized for a standard 20oz tumbler.', stock: 11 },
   ];
 
