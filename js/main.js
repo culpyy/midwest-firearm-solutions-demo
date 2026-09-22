@@ -6,26 +6,24 @@ function stampClass(stage) {
   return { queued: 'stamp-queued', booth: 'stamp-booth', curing: 'stamp-curing', ready: 'stamp-ready' }[stage];
 }
 
-function ticketHTML(job, { withAdvance }) {
-  const advanceIndex = MFS.STAGES.indexOf(job.stage) + 1;
-  const nextLabel = MFS.STAGE_LABEL[MFS.STAGES[advanceIndex]];
-  const advanceBtn = withAdvance
-    ? (nextLabel
-        ? `<button type="button" class="ticket-advance" data-code="${job.code}">${nextLabel}</button>`
-        : `<button type="button" class="ticket-advance" disabled>Done</button>`)
-    : '';
+function statusSelectHTML(job) {
+  const options = MFS.STAGES.map(s => `<option value="${s}" ${s === job.stage ? 'selected' : ''}>${MFS.STAGE_LABEL[s]}</option>`).join('');
+  return `<select class="status-select" data-code="${job.code}" aria-label="Status for ${job.title}">${options}</select>`;
+}
 
+function ticketHTML(job, { withAdvance }) {
   return `
     <div class="ticket">
       <div class="ticket-code">${job.code}</div>
       <div class="ticket-body">
         <h3>${job.title}</h3>
+        ${withAdvance ? `<p class="customer-name">${job.customerName}</p>` : ''}
         <p class="spec">${job.spec}</p>
         <p class="note">${job.note}</p>
       </div>
       <div class="ticket-status">
         <span class="stamp ${stampClass(job.stage)}">${MFS.STAGE_LABEL[job.stage]}</span>
-        ${advanceBtn}
+        ${withAdvance ? statusSelectHTML(job) : ''}
       </div>
     </div>
   `;
@@ -56,9 +54,9 @@ function renderShopRail() {
   if (!el) return;
   el.innerHTML = MFS.getJobs().map(j => ticketHTML(j, { withAdvance: true })).join('');
 
-  el.querySelectorAll('.ticket-advance[data-code]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      MFS.advanceJob(btn.dataset.code);
+  el.querySelectorAll('.status-select[data-code]').forEach(sel => {
+    sel.addEventListener('change', () => {
+      MFS.setJobStage(sel.dataset.code, sel.value);
       renderShopStats();
       renderShopRail();
       renderCustomerRail();

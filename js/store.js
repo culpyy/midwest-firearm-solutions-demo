@@ -22,11 +22,11 @@ const MFS = (() => {
   };
 
   const SEED_JOBS = [
-    { code: 'MFS-2026-014', title: 'Glock 48', spec: 'Cerakote, Purple Splinter', note: 'The purple splinter finish in the photo above.', stage: 'curing', customer: 'demo-customer' },
-    { code: 'MFS-2026-015', title: 'AR-15 Lower', spec: 'Stippling, grip + flared mag well', note: 'In the booth now, should be out by end of day.', stage: 'booth', customer: 'other' },
-    { code: 'MFS-2026-016', title: '1911', spec: 'Full Cerakote + laser serial refresh', note: 'Dropped off with the Glock 48. Coming out of the oven this afternoon.', stage: 'curing', customer: 'demo-customer' },
-    { code: 'MFS-2026-017', title: 'Bolt Rifle Stock', spec: 'Cerakote, Kryptek pattern', note: 'Next in line once the 1911 clears the booth.', stage: 'queued', customer: 'other' },
-    { code: 'MFS-2026-018', title: 'AR Flush Mount', spec: 'Laser engraved shop logo', note: 'Same customer as the Glock 48. Batching them together.', stage: 'queued', customer: 'demo-customer' },
+    { code: 'MFS-2026-014', title: 'Glock 48', spec: 'Cerakote, Purple Splinter', note: 'The purple splinter finish in the photo above.', stage: 'curing', customer: 'demo-customer', customerName: 'Marcus Webb' },
+    { code: 'MFS-2026-015', title: 'AR-15 Lower', spec: 'Stippling, grip + flared mag well', note: 'In the booth now, should be out by end of day.', stage: 'booth', customer: 'other', customerName: 'Dana Whitfield' },
+    { code: 'MFS-2026-016', title: '1911', spec: 'Full Cerakote + laser serial refresh', note: 'Dropped off with the Glock 48. Coming out of the oven this afternoon.', stage: 'curing', customer: 'demo-customer', customerName: 'Marcus Webb' },
+    { code: 'MFS-2026-017', title: 'Bolt Rifle Stock', spec: 'Cerakote, Kryptek pattern', note: 'Next in line once the 1911 clears the booth.', stage: 'queued', customer: 'other', customerName: 'Corey Nguyen' },
+    { code: 'MFS-2026-018', title: 'AR Flush Mount', spec: 'Laser engraved shop logo', note: 'Same customer as the Glock 48. Batching them together.', stage: 'queued', customer: 'demo-customer', customerName: 'Marcus Webb' },
   ];
 
   const PRODUCTS = [
@@ -72,6 +72,14 @@ const MFS = (() => {
     if (!job) return;
     const idx = STAGES.indexOf(job.stage);
     if (idx < STAGES.length - 1) job.stage = STAGES[idx + 1];
+    saveJobs(jobs);
+  }
+  function setJobStage(code, stage) {
+    if (!STAGES.includes(stage)) return;
+    const jobs = getJobs();
+    const job = jobs.find(j => j.code === code);
+    if (!job) return;
+    job.stage = stage;
     saveJobs(jobs);
   }
 
@@ -120,10 +128,19 @@ const MFS = (() => {
   }
 
   // ---- Orders (seeded only - checkout.html adds to this list) ----
+  const ORDER_STATUSES = ['processing', 'pickup ready', 'shipped'];
   function getOrders() { return load(KEYS.orders, SEED_ORDERS); }
   function addOrder(order) {
     const list = getOrders();
     list.unshift(order);
+    save(KEYS.orders, list);
+  }
+  function setOrderStatus(id, status) {
+    if (!ORDER_STATUSES.includes(status)) return;
+    const list = getOrders();
+    const order = list.find(o => o.id === id);
+    if (!order) return;
+    order.status = status;
     save(KEYS.orders, list);
   }
 
@@ -133,12 +150,12 @@ const MFS = (() => {
   }
 
   return {
-    STAGES, STAGE_LABEL, PRODUCTS,
-    getJobs, saveJobs, advanceJob,
+    STAGES, STAGE_LABEL, PRODUCTS, ORDER_STATUSES,
+    getJobs, saveJobs, advanceJob, setJobStage,
     getCart, saveCart, addToCart, updateCartQty, removeFromCart, clearCart, cartTotal, cartCount,
     getIntake, addIntake,
     getReviews, addReview, approveReview,
-    getOrders, addOrder,
+    getOrders, addOrder, setOrderStatus,
     resetDemo,
   };
 })();

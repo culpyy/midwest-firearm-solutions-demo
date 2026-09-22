@@ -1084,6 +1084,13 @@ input[type="radio"] {
   margin: 0 0 4px;
 }
 
+.customer-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--steel);
+  margin: 0 0 6px;
+}
+
 .ticket-body .spec {
   font-size: 14px;
   color: var(--ink-soft);
@@ -1121,39 +1128,21 @@ input[type="radio"] {
 .stamp-curing { color: #a3781f; }
 .stamp-ready  { color: #276b3f; }
 
-.ticket-advance {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
+.status-select {
+  background: #fff;
   border: 1px solid var(--ink);
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--ink);
-  padding: 8px 13px;
-  white-space: nowrap;
+  padding: 7px 10px;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  max-width: 160px;
 }
 
-.ticket-advance::after {
-  content: '→';
-  font-size: 13px;
-}
-
-.ticket-advance:hover { background: var(--ink); color: #fff; }
-
-.ticket-advance:disabled {
-  border-color: #d8d2c4;
-  color: #bfb9ac;
-  cursor: default;
-  background: none;
-}
-
-.ticket-advance:disabled::after { content: ''; }
+.status-select:hover { border-color: var(--rust); }
+.status-select:focus { outline: 2px solid var(--ink); outline-offset: 1px; }
 
 /* ---------- Footer / CTA ---------- */
 

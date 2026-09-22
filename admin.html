@@ -100,23 +100,24 @@
     return { queued: 'stamp-queued', booth: 'stamp-booth', curing: 'stamp-curing', ready: 'stamp-ready' }[stage];
   }
 
+  function statusSelectHTML(job) {
+    const options = MFS.STAGES.map(s => `<option value="${s}" ${s === job.stage ? 'selected' : ''}>${MFS.STAGE_LABEL[s]}</option>`).join('');
+    return `<select class="status-select" data-code="${job.code}" aria-label="Status for ${job.title}">${options}</select>`;
+  }
+
   function ticketHTML(job) {
-    const advanceIndex = MFS.STAGES.indexOf(job.stage) + 1;
-    const nextLabel = MFS.STAGE_LABEL[MFS.STAGES[advanceIndex]];
-    const advanceBtn = nextLabel
-      ? `<button type="button" class="ticket-advance" data-code="${job.code}">${nextLabel}</button>`
-      : `<button type="button" class="ticket-advance" disabled>Done</button>`;
     return `
       <div class="ticket">
         <div class="ticket-code">${job.code}</div>
         <div class="ticket-body">
           <h3>${job.title}</h3>
+          <p class="customer-name">${job.customerName}</p>
           <p class="spec">${job.spec}</p>
           <p class="note">${job.note}</p>
         </div>
         <div class="ticket-status">
           <span class="stamp ${stampClass(job.stage)}">${MFS.STAGE_LABEL[job.stage]}</span>
-          ${advanceBtn}
+          ${statusSelectHTML(job)}
         </div>
       </div>
     `;
@@ -133,8 +134,8 @@
     `;
     const rail = document.getElementById('admin-shop-rail');
     rail.innerHTML = jobs.map(ticketHTML).join('');
-    rail.querySelectorAll('.ticket-advance[data-code]').forEach(btn => {
-      btn.addEventListener('click', () => { MFS.advanceJob(btn.dataset.code); renderBuilds(); });
+    rail.querySelectorAll('.status-select[data-code]').forEach(sel => {
+      sel.addEventListener('change', () => { MFS.setJobStage(sel.dataset.code, sel.value); renderBuilds(); });
     });
   }
 
@@ -155,9 +156,18 @@
           <div class="meta-title">${o.items}</div>
           <div class="meta-sub">${o.customer} · $${o.total.toFixed(2)}</div>
         </div>
-        <span class="stamp ${o.status === 'shipped' ? 'stamp-ready' : o.status === 'pickup ready' ? 'stamp-curing' : 'stamp-booth'}">${o.status}</span>
+        <div class="ticket-status">
+          <span class="stamp ${o.status === 'shipped' ? 'stamp-ready' : o.status === 'pickup ready' ? 'stamp-curing' : 'stamp-booth'}">${o.status}</span>
+          <select class="status-select" data-order="${o.id}" aria-label="Status for order ${o.id}">
+            ${MFS.ORDER_STATUSES.map(s => `<option value="${s}" ${s === o.status ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join('')}
+          </select>
+        </div>
       </div>
     `).join('') : '<div class="admin-empty">No orders yet. Place one from the shop to see it land here.</div>';
+
+    rail.querySelectorAll('.status-select[data-order]').forEach(sel => {
+      sel.addEventListener('change', () => { MFS.setOrderStatus(sel.dataset.order, sel.value); renderOrders(); });
+    });
   }
 
   // ---- Products tab ----
@@ -205,6 +215,7 @@
           note: entry.notes || `Dropped off by ${entry.name}.`,
           stage: 'queued',
           customer: 'other',
+          customerName: entry.name || 'Walk-in customer',
         });
         MFS.saveJobs(jobs);
         btn.textContent = 'Added to Builds ✓';
