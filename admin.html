@@ -268,9 +268,9 @@
           referenceImageName: entry.referenceImageName || null,
         });
         MFS.saveJobs(jobs);
-        btn.textContent = 'Added to Builds ✓';
-        btn.disabled = true;
+        MFS.removeIntake(entry.id);
         renderBuilds();
+        renderIntake();
       });
     });
   }

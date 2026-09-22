@@ -127,6 +127,9 @@ const MFS = (() => {
     list.unshift({ ...entry, id: 'IN-' + Date.now(), submittedAt: new Date().toISOString() });
     save(KEYS.intake, list);
   }
+  function removeIntake(id) {
+    save(KEYS.intake, getIntake().filter(entry => entry.id !== id));
+  }
 
   // ---- Reviews ----
   function getReviews() { return load(KEYS.reviews, SEED_REVIEWS); }
@@ -168,7 +171,7 @@ const MFS = (() => {
     getProducts, setStock,
     getJobs, saveJobs, advanceJob, setJobStage,
     getCart, saveCart, addToCart, updateCartQty, removeFromCart, clearCart, cartTotal, cartCount,
-    getIntake, addIntake,
+    getIntake, addIntake, removeIntake,
     getReviews, addReview, approveReview,
     getOrders, addOrder, setOrderStatus,
     resetDemo,
