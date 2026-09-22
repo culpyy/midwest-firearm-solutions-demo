@@ -1029,6 +1029,127 @@ input[type="radio"] {
 
 .quote-service-label:first-child { margin-top: 0; }
 
+/* ---------- Color swatches (Cerakote picker) ---------- */
+
+.swatch-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 10px 0 20px;
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  width: 62px;
+}
+
+.swatch-color {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--line);
+  box-sizing: border-box;
+  position: relative;
+}
+
+.swatch[aria-pressed="true"] .swatch-color {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink);
+}
+
+.swatch[aria-pressed="true"] .swatch-color::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  mix-blend-mode: difference;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.swatch-label {
+  font-size: 10px;
+  text-align: center;
+  color: var(--ink-soft);
+  line-height: 1.25;
+}
+
+.swatch[aria-pressed="true"] .swatch-label { color: var(--ink); font-weight: 800; }
+
+/* ---------- Reference photo upload ---------- */
+
+.file-upload {
+  border: 1px dashed var(--line);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--paper-dim);
+  transition: border-color 0.15s ease;
+}
+
+.file-upload:hover { border-color: var(--ink); }
+
+.file-upload input[type="file"] {
+  display: none;
+}
+
+.file-upload-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.file-upload-hint {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.file-preview img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.file-preview-remove {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.file-preview-remove:hover { color: var(--rust); }
+
+.intake-ref-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  margin-top: 8px;
+  cursor: zoom-in;
+}
+
 /* ---------- Stat row ---------- */
 
 .stat-row {

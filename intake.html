@@ -69,15 +69,19 @@
               <select id="q-cerakote-firearm"></select>
             </div>
             <div id="cerakote-parts"></div>
-            <div class="form-check" style="margin-top:20px;">
+
+            <p class="fieldset-note" style="margin:20px 0 4px;">Base color</p>
+            <div class="swatch-grid" id="cerakote-base-swatches"></div>
+
+            <div class="form-check">
               <input type="checkbox" id="q-cerakote-pattern">
-              <label for="q-cerakote-pattern">Custom pattern, not a solid color
-                <span id="cerakote-colors-wrap" style="display:none;">
-                  <br>Extra colors beyond the base color:
-                  <input type="number" id="q-cerakote-colors" class="quote-word-input" value="1" min="1" max="5">
-                </span>
-              </label>
+              <label for="q-cerakote-pattern">Custom pattern, not a solid color</label>
             </div>
+            <div id="cerakote-pattern-wrap" style="display:none;">
+              <p class="fieldset-note" style="margin:4px 0 4px;">Pick the additional colors (each one is +$65)</p>
+              <div class="swatch-grid" id="cerakote-pattern-swatches"></div>
+            </div>
+
             <div class="form-check">
               <input type="checkbox" id="q-cerakote-disassembly">
               <label for="q-cerakote-disassembly">It needs to be disassembled before coating (flat fee, varies by firearm type)</label>
@@ -148,8 +152,25 @@
           <input type="text" id="i-caliber">
         </div>
         <div class="form-group">
+          <label>Reference photo (optional)</label>
+          <label class="file-upload" id="fileUploadZone">
+            <input type="file" id="i-reference-photo" accept="image/*">
+            <span id="fileUploadPrompt">
+              <span class="file-upload-label">Click to attach a photo</span>
+              <span class="file-upload-hint">A pattern, color, or build you want to match</span>
+            </span>
+            <div class="file-preview" id="filePreview" style="display:none;">
+              <img id="filePreviewImg" alt="Reference photo preview">
+              <div>
+                <div id="filePreviewName" style="font-size:13px;font-weight:700;"></div>
+                <button type="button" class="file-preview-remove" id="filePreviewRemove">Remove</button>
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="form-group">
           <label for="i-notes">Anything else we should know?</label>
-          <textarea id="i-notes" placeholder="Color name, reference photos you'll bring, timeline, etc."></textarea>
+          <textarea id="i-notes" placeholder="Timeline, how you'd like to be contacted, anything not covered above."></textarea>
         </div>
         <p class="fieldset-note">Demo form: this logs to the shop owner view on this device only. Nothing is emailed or shipped anywhere.</p>
         <button type="submit" class="btn-primary" style="width:100%;">Submit</button>
@@ -165,12 +186,14 @@
   const activeServices = new Set();
   let cerakoteFirearm = 'handgun';
   let cerakoteParts = new Set();
+  let cerakoteBaseColor = null;
   let cerakotePattern = false;
-  let cerakoteColors = 1;
+  let cerakotePatternColors = new Set();
   let cerakoteDisassembly = false;
   let stipplingPackage = 'patrol';
   let stipplingAddons = new Set();
   let laserSelections = new Map();
+  let referencePhoto = null; // { name, dataUrl } or null
 
   // ---- Service toggles (multi-select) ----
   document.getElementById('serviceToggles').addEventListener('click', (e) => {
@@ -196,6 +219,43 @@
     sel.innerHTML = Object.entries(MFS_PRICING.CERAKOTE).map(([key, cfg]) => `<option value="${key}">${cfg.label}</option>`).join('');
     sel.value = cerakoteFirearm;
     renderCerakoteParts();
+    renderBaseSwatches();
+    renderPatternSwatches();
+  }
+
+  function renderBaseSwatches() {
+    const el = document.getElementById('cerakote-base-swatches');
+    el.innerHTML = MFS_PRICING.CERAKOTE_COLORS.map(c => `
+      <button type="button" class="swatch" data-base-color="${c.id}" aria-pressed="${c.id === cerakoteBaseColor}">
+        <span class="swatch-color" style="background:${c.hex};"></span>
+        <span class="swatch-label">${c.label}</span>
+      </button>
+    `).join('');
+    el.querySelectorAll('[data-base-color]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        cerakoteBaseColor = btn.dataset.baseColor;
+        el.querySelectorAll('.swatch').forEach(s => s.setAttribute('aria-pressed', String(s.dataset.baseColor === cerakoteBaseColor)));
+        renderSummary();
+      });
+    });
+  }
+
+  function renderPatternSwatches() {
+    const el = document.getElementById('cerakote-pattern-swatches');
+    el.innerHTML = MFS_PRICING.CERAKOTE_COLORS.map(c => `
+      <button type="button" class="swatch" data-pattern-color="${c.id}" aria-pressed="${cerakotePatternColors.has(c.id)}">
+        <span class="swatch-color" style="background:${c.hex};"></span>
+        <span class="swatch-label">${c.label}</span>
+      </button>
+    `).join('');
+    el.querySelectorAll('[data-pattern-color]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.patternColor;
+        if (cerakotePatternColors.has(id)) cerakotePatternColors.delete(id); else cerakotePatternColors.add(id);
+        btn.setAttribute('aria-pressed', String(cerakotePatternColors.has(id)));
+        renderSummary();
+      });
+    });
   }
 
   function renderCerakoteParts() {
@@ -225,12 +285,7 @@
 
   document.getElementById('q-cerakote-pattern').addEventListener('change', (e) => {
     cerakotePattern = e.target.checked;
-    document.getElementById('cerakote-colors-wrap').style.display = cerakotePattern ? 'inline' : 'none';
-    renderSummary();
-  });
-
-  document.getElementById('q-cerakote-colors').addEventListener('input', (e) => {
-    cerakoteColors = Math.max(1, parseInt(e.target.value, 10) || 1);
+    document.getElementById('cerakote-pattern-wrap').style.display = cerakotePattern ? 'block' : 'none';
     renderSummary();
   });
 
@@ -238,6 +293,11 @@
     cerakoteDisassembly = e.target.checked;
     renderSummary();
   });
+
+  function colorLabel(id) {
+    const c = MFS_PRICING.CERAKOTE_COLORS.find(c => c.id === id);
+    return c ? c.label : id;
+  }
 
   function cerakoteQuote() {
     const cfg = MFS_PRICING.CERAKOTE[cerakoteFirearm];
@@ -249,9 +309,14 @@
         total += p.price;
       }
     });
-    if (cerakotePattern && cerakoteParts.size > 0) {
-      const extra = MFS_PRICING.EXTRA_COLOR_PRICE * cerakoteColors;
-      lines.push({ label: `${cerakoteColors} extra color${cerakoteColors > 1 ? 's' : ''}`, price: extra });
+    if (cerakoteBaseColor && cerakoteParts.size > 0) {
+      lines.push({ label: `Base color: ${colorLabel(cerakoteBaseColor)}`, price: 0 });
+    }
+    if (cerakotePattern && cerakotePatternColors.size > 0 && cerakoteParts.size > 0) {
+      const n = cerakotePatternColors.size;
+      const names = [...cerakotePatternColors].map(colorLabel).join(', ');
+      const extra = MFS_PRICING.EXTRA_COLOR_PRICE * n;
+      lines.push({ label: `${n} extra color${n > 1 ? 's' : ''} (${names})`, price: extra });
       total += extra;
     }
     if (cerakoteDisassembly) {
@@ -393,6 +458,42 @@
     document.getElementById('quote-total').textContent = '$' + total.toFixed(2);
   }
 
+  // ---- Reference photo upload ----
+  const MAX_PHOTO_BYTES = 3 * 1024 * 1024; // 3MB - keeps localStorage happy
+
+  document.getElementById('i-reference-photo').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('That file doesn\'t look like an image. Try a photo instead.');
+      e.target.value = '';
+      return;
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      alert('That photo is a bit large for this demo (3MB max). Try a smaller one.');
+      e.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      referencePhoto = { name: file.name, dataUrl: reader.result };
+      document.getElementById('fileUploadPrompt').style.display = 'none';
+      document.getElementById('filePreview').style.display = 'flex';
+      document.getElementById('filePreviewImg').src = referencePhoto.dataUrl;
+      document.getElementById('filePreviewName').textContent = referencePhoto.name;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('filePreviewRemove').addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    referencePhoto = null;
+    document.getElementById('i-reference-photo').value = '';
+    document.getElementById('fileUploadPrompt').style.display = '';
+    document.getElementById('filePreview').style.display = 'none';
+  });
+
   // ---- Submit ----
   document.getElementById('intakeForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -421,6 +522,8 @@
       notes: document.getElementById('i-notes').value,
       estimate: quotes.length ? total : null,
       estimateLines: combinedLines,
+      referenceImage: referencePhoto ? referencePhoto.dataUrl : null,
+      referenceImageName: referencePhoto ? referencePhoto.name : null,
     };
     MFS.addIntake(entry);
 
@@ -428,7 +531,7 @@
       <div class="confirm-panel">
         <p class="eyebrow">LOGGED</p>
         <h2>You're set, ${entry.name.split(' ')[0] || 'thanks'}.</h2>
-        <p>This just showed up on the shop owner's Intake tab${entry.estimate ? `, with your ${'$' + entry.estimate.toFixed(2)} estimate attached` : ''}. That's the whole point of the thing.</p>
+        <p>This just showed up on the shop owner's Intake tab${entry.estimate ? `, with your ${'$' + entry.estimate.toFixed(2)} estimate attached` : ''}${entry.referenceImage ? ', reference photo included' : ''}. That's the whole point of the thing.</p>
         <a href="admin.html" class="btn-primary" style="margin-top:20px;display:inline-block;">See it on the shop owner side →</a>
       </div>
     `;

@@ -91,7 +91,27 @@ const MFS_PRICING = (() => {
 
   const SETUP_FEE = 20;
 
+  // Representative swatch set of well-known Cerakote colors, for picking a
+  // base color and (if going custom pattern) additional colors on top of it.
+  // Hex values are close approximations for the swatch, not official codes.
+  const CERAKOTE_COLORS = [
+    { id: 'graphite-black', label: 'Graphite Black', hex: '#1c1c1e' },
+    { id: 'sniper-grey', label: 'Sniper Grey', hex: '#8b8d8f' },
+    { id: 'tactical-grey', label: 'Tactical Grey', hex: '#54565a' },
+    { id: 'stainless', label: 'Stainless', hex: '#c8c9cb' },
+    { id: 'magpul-fde', label: 'Magpul FDE', hex: '#b8a488' },
+    { id: 'coyote-tan', label: 'Coyote Tan', hex: '#a6835c' },
+    { id: 'burnt-bronze', label: 'Burnt Bronze', hex: '#6b4a2f' },
+    { id: 'od-green', label: 'OD Green', hex: '#4b5320' },
+    { id: 'multicam-green', label: 'Multicam Green', hex: '#6e6b4e' },
+    { id: 'federal-blue', label: 'Federal Blue', hex: '#3a4a5c' },
+    { id: 'crimson', label: 'Crimson', hex: '#9b2c2c' },
+    { id: 'prison-pink', label: 'Prison Pink', hex: '#e8a0b8' },
+    { id: 'purple', label: 'Purple', hex: '#5b3a7a' },
+    { id: 'gold', label: 'Gold', hex: '#b8860b' },
+  ];
+
   function money(n) { return '$' + n.toFixed(2); }
 
-  return { EXTRA_COLOR_PRICE, CERAKOTE, STIPPLING_PACKAGES, STIPPLING_ADDONS, LASER_TYPES, SETUP_FEE, money };
+  return { EXTRA_COLOR_PRICE, CERAKOTE, CERAKOTE_COLORS, STIPPLING_PACKAGES, STIPPLING_ADDONS, LASER_TYPES, SETUP_FEE, money };
 })();

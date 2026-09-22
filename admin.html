@@ -228,10 +228,18 @@
           <div class="meta-sub">${entry.type || ''}${entry.caliber ? ', ' + entry.caliber : ''} · ${entry.phone} · ${entry.email}</div>
           ${entry.estimateLines && entry.estimateLines.length ? `<div class="meta-sub">${entry.estimateLines.map(l => l.label).join(', ')}</div>` : ''}
           ${entry.notes ? `<div class="meta-sub" style="font-style:italic;">"${entry.notes}"</div>` : ''}
+          ${entry.referenceImage ? `<img src="${entry.referenceImage}" alt="Reference photo from ${entry.name}" class="intake-ref-thumb" title="${entry.referenceImageName || 'Reference photo'}">` : ''}
         </div>
         <button type="button" class="btn-outline" data-start-build="${i}">Start build →</button>
       </div>
     `).join('') : '<div class="admin-empty">No intake submissions yet. Submit the "Send Us a Build" form to see one land here.</div>';
+
+    rail.querySelectorAll('.intake-ref-thumb').forEach(img => {
+      img.addEventListener('click', () => {
+        const w = window.open('', '_blank');
+        w.document.write(`<title>${img.title}</title><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${img.src}" style="max-width:100%;max-height:100vh;"></body>`);
+      });
+    });
 
     rail.querySelectorAll('[data-start-build]').forEach(btn => {
       btn.addEventListener('click', () => {
