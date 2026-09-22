@@ -147,9 +147,15 @@
           <label for="i-email">Email</label>
           <input type="email" id="i-email" required>
         </div>
-        <div class="form-group">
-          <label for="i-caliber">Caliber (optional)</label>
-          <input type="text" id="i-caliber">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="i-firearm-name">Firearm (make &amp; model)</label>
+            <input type="text" id="i-firearm-name" placeholder="Glock 48, AR-15, Remington 870...">
+          </div>
+          <div class="form-group">
+            <label for="i-caliber">Caliber (optional)</label>
+            <input type="text" id="i-caliber">
+          </div>
         </div>
         <div class="form-group">
           <label>Reference photo (optional)</label>
@@ -516,6 +522,7 @@
       name: document.getElementById('i-name').value,
       phone: document.getElementById('i-phone').value,
       email: document.getElementById('i-email').value,
+      firearmName: document.getElementById('i-firearm-name').value,
       service: serviceNames.join(', ') || 'Not specified',
       type: typeParts.join(' + ') || (activeServices.has('other') ? document.getElementById('q-other-type').value : ''),
       caliber: document.getElementById('i-caliber').value,

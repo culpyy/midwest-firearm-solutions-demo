@@ -105,6 +105,11 @@
     return `<select class="status-select" data-code="${job.code}" aria-label="Status for ${job.title}">${options}</select>`;
   }
 
+  function openImageFullSize(src, title) {
+    const w = window.open('', '_blank');
+    w.document.write(`<title>${title || 'Reference photo'}</title><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${src}" style="max-width:100%;max-height:100vh;"></body>`);
+  }
+
   function ticketHTML(job) {
     return `
       <div class="ticket">
@@ -114,6 +119,7 @@
           <p class="customer-name">${job.customerName}</p>
           <p class="spec">${job.spec}</p>
           <p class="note">${job.note}</p>
+          ${job.referenceImage ? `<img src="${job.referenceImage}" alt="Reference photo" class="intake-ref-thumb" title="${job.referenceImageName || 'Reference photo'}">` : ''}
         </div>
         <div class="ticket-status">
           <span class="stamp ${stampClass(job.stage)}">${MFS.STAGE_LABEL[job.stage]}</span>
@@ -136,6 +142,9 @@
     rail.innerHTML = jobs.map(ticketHTML).join('');
     rail.querySelectorAll('.status-select[data-code]').forEach(sel => {
       sel.addEventListener('change', () => { MFS.setJobStage(sel.dataset.code, sel.value); renderBuilds(); });
+    });
+    rail.querySelectorAll('.intake-ref-thumb').forEach(img => {
+      img.addEventListener('click', () => openImageFullSize(img.src, img.title));
     });
   }
 
@@ -224,7 +233,7 @@
       <div class="admin-row">
         <div class="meta-code">${new Date(entry.submittedAt).toLocaleDateString()}</div>
         <div>
-          <div class="meta-title">${entry.name} · ${entry.service || 'Not specified'}${entry.estimate ? ` · $${entry.estimate.toFixed(2)} est.` : ''}</div>
+          <div class="meta-title">${entry.firearmName ? entry.firearmName + ': ' : ''}${entry.name} · ${entry.service || 'Not specified'}${entry.estimate ? ` · $${entry.estimate.toFixed(2)} est.` : ''}</div>
           <div class="meta-sub">${entry.type || ''}${entry.caliber ? ', ' + entry.caliber : ''} · ${entry.phone} · ${entry.email}</div>
           ${entry.estimateLines && entry.estimateLines.length ? `<div class="meta-sub">${entry.estimateLines.map(l => l.label).join(', ')}</div>` : ''}
           ${entry.notes ? `<div class="meta-sub" style="font-style:italic;">"${entry.notes}"</div>` : ''}
@@ -235,10 +244,7 @@
     `).join('') : '<div class="admin-empty">No intake submissions yet. Submit the "Send Us a Build" form to see one land here.</div>';
 
     rail.querySelectorAll('.intake-ref-thumb').forEach(img => {
-      img.addEventListener('click', () => {
-        const w = window.open('', '_blank');
-        w.document.write(`<title>${img.title}</title><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${img.src}" style="max-width:100%;max-height:100vh;"></body>`);
-      });
+      img.addEventListener('click', () => openImageFullSize(img.src, img.title));
     });
 
     rail.querySelectorAll('[data-start-build]').forEach(btn => {
@@ -246,14 +252,20 @@
         const entry = list[parseInt(btn.dataset.startBuild, 10)];
         const jobs = MFS.getJobs();
         const code = 'MFS-2026-0' + (20 + jobs.length);
+        const colorDetail = entry.estimateLines && entry.estimateLines.length
+          ? entry.estimateLines.map(l => l.label).join(', ')
+          : '';
+        const noteParts = [colorDetail, entry.notes].filter(Boolean);
         jobs.push({
           code,
-          title: entry.type || 'Customer build',
-          spec: entry.service + (entry.caliber ? ', ' + entry.caliber : ''),
-          note: entry.notes || `Dropped off by ${entry.name}.`,
+          title: entry.firearmName || entry.type || 'Customer build',
+          spec: entry.type + (entry.caliber ? ', ' + entry.caliber : ''),
+          note: noteParts.length ? noteParts.join('. ') : `Dropped off by ${entry.name}.`,
           stage: 'queued',
           customer: 'other',
           customerName: entry.name || 'Walk-in customer',
+          referenceImage: entry.referenceImage || null,
+          referenceImageName: entry.referenceImageName || null,
         });
         MFS.saveJobs(jobs);
         btn.textContent = 'Added to Builds ✓';

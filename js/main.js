@@ -11,6 +11,11 @@ function statusSelectHTML(job) {
   return `<select class="status-select" data-code="${job.code}" aria-label="Status for ${job.title}">${options}</select>`;
 }
 
+function openImageFullSize(src, title) {
+  const w = window.open('', '_blank');
+  w.document.write(`<title>${title || 'Reference photo'}</title><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${src}" style="max-width:100%;max-height:100vh;"></body>`);
+}
+
 function ticketHTML(job, { withAdvance }) {
   return `
     <div class="ticket">
@@ -20,6 +25,7 @@ function ticketHTML(job, { withAdvance }) {
         ${withAdvance ? `<p class="customer-name">${job.customerName}</p>` : ''}
         <p class="spec">${job.spec}</p>
         <p class="note">${job.note}</p>
+        ${job.referenceImage ? `<img src="${job.referenceImage}" alt="Reference photo" class="intake-ref-thumb" title="${job.referenceImageName || 'Reference photo'}">` : ''}
       </div>
       <div class="ticket-status">
         <span class="stamp ${stampClass(job.stage)}">${MFS.STAGE_LABEL[job.stage]}</span>
@@ -29,11 +35,18 @@ function ticketHTML(job, { withAdvance }) {
   `;
 }
 
+function wireReferenceThumbs(container) {
+  container.querySelectorAll('.intake-ref-thumb').forEach(img => {
+    img.addEventListener('click', () => openImageFullSize(img.src, img.title));
+  });
+}
+
 function renderCustomerRail() {
   const el = document.getElementById('customer-rail');
   if (!el) return;
   const mine = MFS.getJobs().filter(j => j.customer === 'demo-customer');
   el.innerHTML = mine.map(j => ticketHTML(j, { withAdvance: false })).join('');
+  wireReferenceThumbs(el);
 }
 
 function renderShopStats() {
@@ -53,6 +66,7 @@ function renderShopRail() {
   const el = document.getElementById('shop-rail');
   if (!el) return;
   el.innerHTML = MFS.getJobs().map(j => ticketHTML(j, { withAdvance: true })).join('');
+  wireReferenceThumbs(el);
 
   el.querySelectorAll('.status-select[data-code]').forEach(sel => {
     sel.addEventListener('change', () => {
