@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Build Tracker — a preview for Midwest Firearm Solutions</title>
+<meta name="description" content="A look at what Custom Build Tracker would look like on midwestfirearmsolutions.com — built by Elkhorn Digital.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Mulish:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="honesty-strip">
+  A preview built for Midwest Firearm Solutions by Elkhorn Digital — not connected to your live site or data. Your real site stays at <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener">midwestfirearmsolutions.com</a>.
+</div>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1557428269722-XQZC1AXJ4QPPJ8KAMIF2/MidwestFirearmsSoultions.jpg" alt="Midwest Firearm Solutions">
+      <span class="brand-name">Midwest Firearm<br>Solutions</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#top">Home</a></li>
+      <li><a href="https://www.midwestfirearmsolutions.com/about" target="_blank" rel="noopener">About</a></li>
+      <li><a href="https://www.midwestfirearmsolutions.com/shop" target="_blank" rel="noopener">Shop</a></li>
+      <li><a href="https://www.midwestfirearmsolutions.com/gallery" target="_blank" rel="noopener">Gallery</a></li>
+      <li><a href="https://www.midwestfirearmsolutions.com/contact" target="_blank" rel="noopener">Contact</a></li>
+      <li><a href="#tracker" class="nav-new">Track My Build</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-copy">
+    <p class="hero-kicker">NEW FOR MFS CUSTOMERS</p>
+    <h1>Every Cerakote job,<br>tracked start to finish.</h1>
+    <p>Right now, a customer has to call and ask where their build is. Custom Build Tracker gives them a live status page instead — and gives you one screen that shows every job in the shop.</p>
+    <div class="hero-actions">
+      <a href="#tracker" class="btn-primary">See it in action</a>
+      <a href="https://www.midwestfirearmsolutions.com/" target="_blank" rel="noopener" class="text-link">Your site, unchanged →</a>
+    </div>
+  </div>
+  <div class="hero-photo">
+    <img src="https://images.squarespace-cdn.com/content/v1/5cd343e0e6666910486d7340/1673027573680-M6H0SC04RO9Q3OTN8I3K/image-asset.jpeg?format=1500w" alt="Glock 48 finished in a purple and black splinter Cerakote pattern">
+    <div class="hero-photo-caption">MFS-2026-014 · Glock 48 · Purple Splinter</div>
+  </div>
+</header>
+
+<section class="section" id="tracker">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>One board, two views.</h2>
+      <p>Your customer sees their job move through the shop. You see everyone's job move through the shop. Same board — try both below.</p>
+    </div>
+
+    <div class="view-switch" role="tablist" aria-label="Choose a view">
+      <button type="button" role="tab" id="tab-customer" aria-selected="true" aria-controls="panel-customer">Customer view</button>
+      <button type="button" role="tab" id="tab-shop" aria-selected="false" aria-controls="panel-shop">Your view</button>
+    </div>
+
+    <div id="panel-customer" role="tabpanel" aria-labelledby="tab-customer">
+      <p class="view-switch-note">What a customer sees when they check their own build.</p>
+      <div class="ticket-rail" id="customer-rail"></div>
+    </div>
+
+    <div id="panel-shop" role="tabpanel" aria-labelledby="tab-shop" hidden>
+      <p class="view-switch-note">What you and your team see — every job in the shop, with one click to move a job forward.</p>
+      <div class="stat-row" id="shop-stats"></div>
+      <div class="ticket-rail" id="shop-rail"></div>
+    </div>
+  </div>
+</section>
+
+<section class="footer-cta">
+  <div class="wrap">
+    <div>
+      <h2>Want this running on your real site?</h2>
+      <p>It plugs into midwestfirearmsolutions.com without touching your Squarespace setup — your customers just get a "Track My Build" link, and you get the shop view. Takes about a week to stand up.</p>
+      <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0Lpo5Nd4sd_wurOKgGnlsgAUlLgyu8I7pen_Otehfo7-ETHXkS8Aj_qbULyfHv65B463_g2GWZ" target="_blank" rel="noopener" class="btn-primary">Book a 30-minute call</a>
+    </div>
+    <div class="footer-contact">
+      <strong>Braeden Culp</strong>
+      <span>Elkhorn Digital, LLC</span>
+      <span>(480) 510-2081</span>
+      <a href="mailto:braeden.culp@elkhorndigital.com">braeden.culp@elkhorndigital.com</a>
+    </div>
+  </div>
+  <div class="wrap footer-meta">
+    This page is a demo. Nothing on it is connected to Midwest Firearm Solutions' real site, shop, or customer data — the job list below is sample data only. Built by <a href="mailto:braeden.culp@elkhorndigital.com">Elkhorn Digital</a>.
+  </div>
+</section>
+
+<script src="js/main.js"></script>
+</body>
+</html>
